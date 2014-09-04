@@ -22,8 +22,8 @@ Ext.application({
     name: 'SeaGrant_Proto',
 
     controllers: ["List"],
-    models: ['City', "Test", "Products", "Locations"],
-    stores: ["Info", "Education", "CountryStore", "Vendor", "Product", "Location", "Distance"],
+    models: ['City', "Test", "Products", "Locations", "States"],
+    stores: ["Info", "Education", "CountryStore", "StateStore", "Vendor", "Product", "Location", "Distance"],
     views: ["Home", "Detail", "ListView", "Map", "Info", "Specific", "TestView"],
 
 

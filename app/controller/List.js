@@ -120,7 +120,7 @@ Ext.define('SeaGrant_Proto.controller.List', {
 		// console.log(index.data.name);
 		var store = Ext.data.StoreManager.lookup('Vendor');
 		console.log('This is the store.');
-		console.log(store);
+		console.log(index.getData());
 		var productfilter = new Ext.util.Filter({
 			filterFn: function(item, record){
 				return item.get('name') === index.data.name;
@@ -132,6 +132,36 @@ Ext.define('SeaGrant_Proto.controller.List', {
 		store.clearFilter();
 		store.filter(productfilter);
 		console.log(detailView);
+
+		// Trying to pass product data from selected vendor to new store, so that we
+		// can use the new store to correctly use tpl print to make selectable list 
+		// items of each unique product.
+				
+		// Trying to find store so that we can add data to the new store.
+		var storeStuff = Ext.data.StoreManager.lookup('SS');
+		// console.log(stuff);
+		// console.log('storeStuff Items: ');
+		// console.log(storeStuff.data.items[0]);
+		storeStuff.removeAll();
+		// console.log(storeStuff.data.items);
+
+		// Store is populated with items from selected vendor
+		console.log(index.data.products.length);
+		for(i = 0; i < index.data.products.length; i++){
+			var newpro = {
+				name: index.data.products[i].name, 
+				preparation: index.data.products[i].preparation
+			};
+			// console.log('Name:');
+			// console.log(index.data.products[i].name);
+			// console.log('Prep:');
+			// console.log(index.data.products[i].preparation);
+			storeStuff.add(newpro);
+		};
+		// console.log('Final storeStuff items: ');
+		// console.log(storeStuff.data.items); 
+
+
 		Ext.Viewport.animateActiveItem(detailView, this.slideLeftTransition);
 	},
 	// Functions dealing with 
