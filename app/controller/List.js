@@ -42,7 +42,7 @@ Ext.define('SeaGrant_Proto.controller.List', {
 	},
 	slideLeftTransition: {
 		type: 'slide',
-		direction: 'left'
+		direction: 'left' 
 	},
 	slideRightTransition: {
 		type: 'slide',
@@ -157,7 +157,7 @@ Ext.define('SeaGrant_Proto.controller.List', {
 			// console.log('Prep:');
 			// console.log(index.data.products[i].preparation);
 			storeStuff.add(newpro);
-		};
+		}
 		// console.log('Final storeStuff items: ');
 		// console.log(storeStuff.data.items); 
 
