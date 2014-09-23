@@ -4,7 +4,7 @@ isPresent = true;
 
 Ext.define('SeaGrant_Proto.controller.List', {
 	extend: 'Ext.app.Controller',
-	requires: ['Ext.MessageBox', 'Ext.device.Geolocation'],
+	requires: ['Ext.MessageBox', 'Ext.util.Geolocation'],
 	alias: 'cont',
 	config: {
 		refs: {
@@ -58,24 +58,137 @@ Ext.define('SeaGrant_Proto.controller.List', {
 	onSetUseLocation: function(index, record){
 		console.log('In controller(home): User Location toggle');
 		console.log(record._component._value[0]);
-		console.log(record);
-		if(record._component._value[0] === 1){
+		// console.log(record);
+		// this works great in browser, but not on the device. When loaded on the device, the app will not even open
+		// if(record._component._value[0] == 1){
+		// 	// This updates the user's location and how far from their location they would like to search for vendors/products
+		// 	Ext.device.Geolocation.watchPosition({
+		// 	    frequency: 3000, // Update every 3 seconds
+		// 	    callback: function(position) {
+		// 	        console.log('Position updated!', position.coords);
+		// 	        // console.log(index._items.items[2]._value.data.val);
+		// 			var dist = index._items.items[2]._value.data.val;
+		// 	    },
+		// 	    failure: function() {
+		// 	        console.log('something went wrong!');
+		// 	    }
+		// 	});
+			
+		// }else{
+		// 	Ext.device.Geolocation.clearWatch();
+		// };
+
+		// testing using phonegap geolocation
+		// on device, the on success function is never run, because watchID instantiation never gets into on success,
+		// a watchID is made, but even if we explicitly call onSuccess, the element can't be set, because then position is undefined
+		if(record._component._value[0] == 1){
 			// This updates the user's location and how far from their location they would like to search for vendors/products
-			Ext.device.Geolocation.watchPosition({
-			    frequency: 3000, // Update every 3 seconds
-			    callback: function(position) {
-			        console.log('Position updated!', position.coords);
-			        // console.log(index._items.items[2]._value.data.val);
-					var dist = index._items.items[2]._value.data.val;
-			    },
-			    failure: function() {
-			        console.log('something went wrong!');
-			    }
-			});
+			// Wait for PhoneGap to load
+		    //
+
+		    console.log('watchID is NULL here');
+		    document.addEventListener("deviceready", onDeviceReady, false);
+
+		    // var watchID = null;
+		    
+		    // PhoneGap is ready
+		    //
+		    function onDeviceReady() {
+		    	console.log('Device is ready!');
+		        // Update every 3 seconds
+		        var options = { frequency: 3000, enableHighAccuracy: true };
+		        watchID = navigator.geolocation.watchPosition(onSuccess, onError, options);
+		        console.log('got new watch id');
+		        console.log(watchID);
+		    }
+
+		    // onSuccess Geolocation
+		    //
+		    function onSuccess(position) {
+		    	console.log('We have success');
+		        var element = document.getElementById('geolocation');
+		        element ={
+		        	lat: position.coords.latitude,
+		        	lng: position.coords.longitude
+		        };
+		        // element.innerHTML = 'Latitude: '  + position.coords.latitude      + '<br />' +
+		        //                     'Longitude: ' + position.coords.longitude     + '<br />' +
+		        //                     '<hr />'      + element.innerHTML;
+		        console.log('element:');
+		        console.log(element);
+		    }
+
+		    // onError Callback receives a PositionError object
+		    //
+		    function onError(error) {
+		        alert('code: '    + error.code    + '\n' +
+		              'message: ' + error.message + '\n');
+		    }
+
+		    // THIS IS THE SECONDARY PHONEGAP GEOLOCATION TEST
+		    // onSuccess Callback
+			//   This method accepts a `Position` object, which contains
+			//   the current GPS coordinates
+			//
+			// function onSuccess(position) {
+			// 	console.log('We are finally successful');
+			//     var element = document.getElementById('geolocation');
+			//     element.innerHTML = 'Latitude: '  + position.coords.latitude      + '<br />' +
+			//                         'Longitude: ' + position.coords.longitude     + '<br />' +
+			//                         '<hr />'      + element.innerHTML;
+			// }
+
+			// // onError Callback receives a PositionError object
+			// //
+			// function onError(error) {
+			//     alert('code: '    + error.code    + '\n' +
+			//           'message: ' + error.message + '\n');
+			// }
+
+			// // Options: retrieve the location every 3 seconds
+			// //
+			// console.log('Before watchID');
+			// var watchID = navigator.geolocation.watchPosition(onSuccess, onError, { frequency: 3000 });
+			// console.log('Now we have a watchID');
+			// console.log(watchID);
+
 			
 		}else{
-			Ext.device.Geolocation.clearWatch();
-		}
+			console.log('USER LOCATION IS TURNED OFF NOW!');
+			console.log(watchID);
+			navigator.geolocation.clearWatch(watchID);
+		};
+
+		// testing geolocation using utils
+		// doesn't return anything on device
+		// var geo = new Ext.util.GeoLocation({
+		//     autoUpdate: true,
+		//     listeners: {
+		//         locationupdate: function (geo) {
+		//             // alert('New latitude: ' + geo.latitude);
+		//             console.log(geo.latitude);
+		//         },
+		//         locationerror: function (   geo,
+		//                                     bTimeout, 
+		//                                     bPermissionDenied, 
+		//                                     bLocationUnavailable, 
+		//                                     message) {
+		//             if(bTimeout){
+		//                 alert('Timeout occurred.');
+		//             }
+		//             else{
+		//                 alert('Error occurred.');
+		//             }
+		//         }
+		//     }
+		// });
+		// if(record._component._value[0] == 1){
+		// 	geo.updateLocation();
+		// 	geo.autoUpdate = true
+		// }else{
+		// 	// no geolocation update
+		// 	geo.autoUpdate = false
+		// }
 	},
 	// This function may be unnecessary due to the fact that we set the distance in the callback function above
 	onSetDistance: function(index, record){
