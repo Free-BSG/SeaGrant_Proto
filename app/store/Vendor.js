@@ -8,11 +8,7 @@ Ext.define('SeaGrant_Proto.store.Vendor', {
 		autoLoad: true,
 		proxy: {
 			type: 'ajax',
-			url: '/newVendors.json',
-			noCache: false,
-			pageParam: false,
-			startParam: false,
-			limitParam: false,
+			url: 'http://seagrant-staging.osuosl.org/vendors',
 			reader: {
 				type: 'json',
 				rootProperty: 'vendors'

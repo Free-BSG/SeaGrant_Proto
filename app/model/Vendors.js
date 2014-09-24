@@ -20,8 +20,7 @@ Ext.define('SeaGrant_Proto.model.Vendors', {
         	'lat',
         	'contact_name',
         	'story',
-        	'name',
-            'value'
+        	'name'
         ]
     }
 });
