@@ -3,18 +3,14 @@ Ext.define('SeaGrant_Proto.store.Location', {
 	// requires: 'Ext.data.proxy.LocalStorage',
 	// id: 'thisStuff',
 	config: {
-		model: 'SeaGrant_Proto.model.Locations',
+		model: 'SeaGrant_Proto.model.Vendors',
 		autoLoad: true,
 		proxy: {
 			type: 'ajax',
-			url: '/newLocations.json',
-			noCache: false,
-			pageParam: false,
-			startParam: false,
-			limitParam: false,
+			url: 'http://seagrant-staging-api.osuosl.org/vendors',
 			reader: {
 				type: 'json',
-				rootProperty: 'locations'
+				rootProperty: 'vendors'
 			}
 		}
 	}

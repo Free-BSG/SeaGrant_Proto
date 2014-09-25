@@ -26,7 +26,6 @@ Ext.application({
     stores: ["Education", "Vendor", "Product", "Location", "Distance", "VendorInventory"],
     views: ["Home", "Detail", "ListView", "Map", "Info", "Specific"],
 
-
     launch: function() {
         Ext.Viewport.add(Ext.create('SeaGrant_Proto.view.Home'));
         Ext.Viewport.add(Ext.create('SeaGrant_Proto.view.Map'));
