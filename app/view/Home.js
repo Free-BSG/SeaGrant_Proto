@@ -38,11 +38,11 @@ Ext.define('SeaGrant_Proto.view.Home', {
 	            items: [
 	                {
 						xtype: 'selectfield',			
-						itemId: 'selectlocation',
+						itemId: 'selectlocation', 
 						label: 'Location',
 						labelWrap: true,
 						displayField: 'city',
-						store: 'Vendor',
+						store: 'Location',
 						valueField: 'id'
 					},
 	                {

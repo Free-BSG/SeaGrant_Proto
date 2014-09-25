@@ -58,8 +58,8 @@ Ext.define('SeaGrant_Proto.view.Map', {
         var mapPanel = this.down('map');
         SeaGrant_Proto.gMap = mapPanel.getMap();
 
-        console.log('in the initmap function:');
-        console.log(SeaGrant_Proto);
+        // console.log('in the initmap function:');
+        // console.log(SeaGrant_Proto);
 
         // this should reset our map center, but it doesn't
         //  setTimeout(function() {

@@ -9,7 +9,7 @@ Ext.define('SeaGrant_Proto.controller.List', {
 	config: {
 		refs: {
 			homeView: 'home',
-			listView: 'listview',
+			listView: 'listview', 
 			detailView: 'detail',			
 			infoView: 'info',
 			specificView: 'specific'
@@ -81,7 +81,7 @@ Ext.define('SeaGrant_Proto.controller.List', {
 		// testing using phonegap geolocation
 		// on device, the on success function is never run, because watchID instantiation never gets into on success,
 		// a watchID is made, but even if we explicitly call onSuccess, the element can't be set, because then position is undefined
-		if(record._component._value[0] == 1){
+		if(record._component._value[0] === 1){
 			// This updates the user's location and how far from their location they would like to search for vendors/products
 			// Wait for PhoneGap to load
 		    //
@@ -157,7 +157,7 @@ Ext.define('SeaGrant_Proto.controller.List', {
 			console.log('USER LOCATION IS TURNED OFF NOW!');
 			console.log(watchID);
 			navigator.geolocation.clearWatch(watchID);
-		};
+		}
 
 		// testing geolocation using utils
 		// doesn't return anything on device
@@ -200,10 +200,8 @@ Ext.define('SeaGrant_Proto.controller.List', {
 		// We first check to see if a location is chosen, if one is we sort by locataion,
 		// then we check to see if a product is chosen, if one is we sort by product
 		console.log('In controller(home): Drop Down list Location');
-		// var loc = this.getHomeView();
-		// console.log(record);
-		SeaGrant_Proto.location = record._value.data.title;
-		// console.log('Location is: '+ location);
+		console.log('Location is: '+ record._value.data.city); 
+		SeaGrant_Proto.location = record._value.data.city;
 		// ALL FILTERS ONLY TAKE STRINGS, NONE WORK WITH VARABLES
 		// THAT ARE SELECED USING DROP DOWN TABLES, EVEN TOSTRING()
 		// FUNCTION WILL NOT WORK
@@ -255,9 +253,12 @@ Ext.define('SeaGrant_Proto.controller.List', {
 			// console.log(SeaGrant_Proto.Litem[j]);
 		}
 		var vendcount;
-		console.log(vendcount);
+		// console.log('vendcount:');
+		// console.log(vendcount);
 		var homeView = this.getHomeView();
 		var crud = homeView.getComponent('vendnum'); // gets our display item in from the home page
+		// console.log(store);
+		// console.log(store[F].data.length);
 		// This defines how the tpl data is printed out given the drop down table states
 		if ((SeaGrant_Proto.location !== 'Please choose a location') || (SeaGrant_Proto.product !== 'Please choose a product')){
 			if(SeaGrant_Proto.location === 'Please choose a location'){
@@ -295,6 +296,8 @@ Ext.define('SeaGrant_Proto.controller.List', {
 				}
 			}			
 		}
+		console.log('vendcount2:');
+		console.log(vendcount);
 		crud.setData(vendcount); // needed to display tpl data on home view
 		Ext.Viewport.setActiveItem(homeView);
 	},
@@ -308,7 +311,6 @@ Ext.define('SeaGrant_Proto.controller.List', {
 		var store = Ext.data.StoreManager.lookup('Vendor');
 		// console.log(store.data.all);
 		var len = store.data.all.length;
-		// console.log(store);
 		if(SeaGrant_Proto.location != 'Please choose a location'){
 			// console.log('IN LOC FILTER');
 			var locationfilter = new Ext.util.Filter({
@@ -581,7 +583,8 @@ Ext.define('SeaGrant_Proto.controller.List', {
 	// Initialize functions
 	launch: function(){
 		this.callParent(arguments);
-		// console.log("launch");
+		var store = Ext.data.StoreManager.lookup('Location');
+		console.log("launch");
 	},
 	init: function(){
 		this.callParent(arguments);
