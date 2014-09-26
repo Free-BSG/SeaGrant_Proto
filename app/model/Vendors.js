@@ -13,7 +13,7 @@ Ext.define('SeaGrant_Proto.model.Vendors', {
                 'story_id',
                 'ext',
                 'location_description',
-                'long',
+                'lng',
                 'hours',
                 'state',
                 'street',
