@@ -339,6 +339,15 @@ Ext.define('SeaGrant_Proto.controller.List', {
 			store.filter(prodFilter);
 		}
 
+		// THIS FINDS THE NUMBER OF VENDORS AFTER THE SORT
+		// NEEDED TO SET MAP MARKERS IN ONGOBUTTONCOMMAND
+		SeaGrant_Proto.Litem = new Array();
+		SeaGrant_Proto.VstoreLength = store.data.items.length;
+		for (j = 0; j < store.data.items.length; j++){
+			SeaGrant_Proto.Litem[j] = store.data.items[j].data;			
+			// console.log(SeaGrant_Proto.Litem[j]);
+		}
+
 		var homeView = this.getHomeView();
 		var crud = homeView.getComponent('vendnum'); // gets our display item in from the home page
 		var vendcount;
