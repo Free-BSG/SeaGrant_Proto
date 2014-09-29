@@ -25,7 +25,7 @@ Ext.define('SeaGrant_Proto.view.Home', {
 				labelWrap: true,
 				displayField: 'distance',
 				store: 'Distance',
-				// valueField: 'id'
+				valueField: 'val'
 			},
 			{	
 	        	xtype: 'panel',
