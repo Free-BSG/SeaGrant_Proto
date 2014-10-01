@@ -1,6 +1,6 @@
 Ext.define('SeaGrant_Proto.model.Vendors', {
     extend: 'Ext.data.Model',
-    requires: ['Ext.data.Field'],
+    // requires: ['Ext.data.Field'],
     config: {
         fields:[
         	'city',

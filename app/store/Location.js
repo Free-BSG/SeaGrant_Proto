@@ -7,7 +7,11 @@ Ext.define('SeaGrant_Proto.store.Location', {
 		autoLoad: true,
 		proxy: {
 			type: 'ajax',
-			url: 'newLocations.json',
+			url: '/newLocations.json',
+			noCache: false,
+			pageParam: false,
+			startParam: false,
+			limitParam: false,
 			reader: {
 				type: 'json',
 				rootProperty: 'locations'

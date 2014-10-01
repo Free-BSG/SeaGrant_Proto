@@ -4,8 +4,12 @@ describe('SeaGrant_Proto.store.Product',function() {
 
     beforeEach(function() {
         //Set up globals
+         console.log('in before each function');
 		jasmine.Ajax.install();
+		console.log('Ajax is installed');
 		store = Ext.create('SeaGrant_Proto.store.Product');
+		console.log('store created');
+        console.log(store);
     });
 
     afterEach(function() {
@@ -15,10 +19,13 @@ describe('SeaGrant_Proto.store.Product',function() {
         //something like the model.destroy() function.
 		jasmine.Ajax.uninstall();
         store = null;
+        console.log('store removed');
     });
 
 
     it('exists', function() {
+    	 console.log('In exists function');
+        console.log(store);
         expect(store.$className).toEqual('SeaGrant_Proto.store.Product');
     });
 
