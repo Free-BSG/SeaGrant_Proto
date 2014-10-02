@@ -1,3 +1,7 @@
+var isPresent;
+isPresent = true;
+
+
 Ext.define('SeaGrant_Proto.controller.List', {
 	extend: 'Ext.app.Controller',
 	requires: ['Ext.MessageBox', 'Ext.device.Geolocation'],

@@ -1,7 +1,7 @@
 describe('SeaGrant_Proto.store.Vendor',function() {
 
     var store;
-
+ 
     beforeEach(function() {
         //Set up globals
 		jasmine.Ajax.install();

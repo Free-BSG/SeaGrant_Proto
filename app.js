@@ -21,9 +21,8 @@ Ext.Loader.setConfig({
 Ext.application({
     name: 'SeaGrant_Proto',
 
-    requires: ['Ext.Label'],
     controllers: ["List"],
-    models: ['Vendors', "Test", "Products", "Locations", "VendorInventories"],
+    models: ["Vendors", "Test", "Products", "Locations", "VendorInventories"],
     stores: ["Info", "Education", "CountryStore", "Vendor", "Product", "Location", "Distance", "VendorInventory"],
     views: ["Home", "Detail", "ListView", "Map", "Info", "Specific", "TestView"],
 

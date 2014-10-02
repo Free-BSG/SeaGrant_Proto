@@ -1,5 +1,7 @@
 describe('SeaGrant_Proto.store.Distance',function() {
 
+    // Ext.require('SeaGrant_Proto.store.Distance');
+
 	 var store;
  
     beforeEach(function() {
@@ -8,7 +10,7 @@ describe('SeaGrant_Proto.store.Distance',function() {
 		jasmine.Ajax.install();
         console.log('Ajax is installed');
         // for some reason this line doesn't work and store is not created.
-		store = Ext.create('SeaGrant_Proto.store.Product');
+		store = Ext.create('SeaGrant_Proto.store.Distance');
         console.log('store created');
         console.log(store);
     });
