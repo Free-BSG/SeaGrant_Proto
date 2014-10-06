@@ -196,84 +196,99 @@ Ext.define('SeaGrant_Proto.controller.List', {
 		// console.log(record._value.data.val);
 		SeaGrant_Proto.dist = record._value.data.val;
 	},
-	onLoadLocationStore: function(){
-		console.log('In the init function');
-		// THIS CREATES AN ARRAY TO CALL
-		// console.log('Starting Initialize');
-		// var store = Ext.data.StoreManager.lookup('Vendor');
-		// SeaGrant_Proto.local = [];
-		// var temploc;
-		// for(var i = 0; i < store.getCount(); i++){
-		// 	temploc = store.getAt(i).data.city;
-		// 	Ext.Array.include(SeaGrant_Proto.local, temploc);
-		// 	// console.log('Current City:');
-		// 	// console.log(store.getAt(i).data.city);
-		// 	// console.log('The latest array value');
-		// 	// console.log(SeaGrant_Proto.Local[i].data.city);
-		// }
+	// onLoadLocationStore: function(){
+	// 	console.log('In the init function');
+	// 	// THIS CREATES AN ARRAY TO CALL
+	// 	// console.log('Starting Initialize');
+	// 	// var store = Ext.data.StoreManager.lookup('Vendor');
+	// 	// SeaGrant_Proto.local = [];
+	// 	// var temploc;
+	// 	// for(var i = 0; i < store.getCount(); i++){
+	// 	// 	temploc = store.getAt(i).data.city;
+	// 	// 	Ext.Array.include(SeaGrant_Proto.local, temploc);
+	// 	// 	// console.log('Current City:');
+	// 	// 	// console.log(store.getAt(i).data.city);
+	// 	// 	// console.log('The latest array value');
+	// 	// 	// console.log(SeaGrant_Proto.Local[i].data.city);
+	// 	// }
 
-		// THIS WILL INSTANTIATE A NEW STORE FOR THE LOCATION DROP DOWN LIST TO REFERENCE
-		var store = Ext.data.StoreManager.lookup('Vendor');
-		var storeLocal = Ext.data.StoreManager.lookup('Location');
-		// console.log(stuff);
-		// console.log('storeStuff Items: ');
-		// console.log(storeStuff.data.items[0]);
-		storeLocal.removeAll();
-		// console.log(storeStuff.data.items);
-		console.log(store);
-		console.log(storeLocal);
-		var flag;
-		console.log(store.data.all);
-		console.log(store.data.all.length);
-		console.log(store.data.length);
-		var t = 0
-		// Store is populated with items from selected vendor
-		for(var i = 0; i < 15; i++){
-			console.log('IN FIRST FOR LOOP I');
-			for(var j = 0; j <= storeLocal.data.all.length; j++){
-				console.log('IN SECOND FOR LOOP J');
-				console.log(storeLocal.data.all.length);
-				if(storeLocal.data.all.length !== 0){
-					console.log('checking flag status');
-					console.log(j);
-					console.log(k);
-					if(store.data.all[i].city === storeLocal.data.all[k].city){
-						flag = 1;					
-					}
-				}else{
-					flag = 1;
-				}
-				if(flag === 1){
-					console.log('newpro');
-					var newpro = store.data.all[i];
-					console.log(newpro);
-					console.log('setting an item in the data store at location '+ t);
-					console.log(store.data);
-					// console.log('Name:');
-					// console.log(index.data.products[i].name);
-					// console.log('Prep:');
-					// console.log(index.data.products[i].preparation);
-					storeLocal.add(newpro);
-					console.log('Added new city');
-					t++;
-				}
-				flag = 0;
-				var k = j;
-			}
+	// 	// THIS WILL INSTANTIATE A NEW STORE FOR THE LOCATION DROP DOWN LIST TO REFERENCE
+	// 	var store = Ext.data.StoreManager.lookup('Vendor');
+	// 	var storeLocal = Ext.data.StoreManager.lookup('Location');
+	// 	// console.log(stuff);
+	// 	// console.log('storeStuff Items: ');
+	// 	// console.log(storeStuff.data.items[0]);
+	// 	storeLocal.removeAll();
+	// 	// console.log(storeStuff.data.items);
+	// 	console.log(store);
+	// 	console.log(storeLocal);
+	// 	var flag;
+	// 	console.log(store.data.all);
+	// 	console.log(store.data.all.length);
+	// 	console.log(store.data.length);
+	// 	var t = 0
+	// 	// Store is populated with items from selected vendor
+	// 	for(var i = 0; i < 15; i++){
+	// 		console.log('IN FIRST FOR LOOP I');
+	// 		for(var j = 0; j <= storeLocal.data.all.length; j++){
+	// 			console.log('IN SECOND FOR LOOP J');
+	// 			console.log(storeLocal.data.all.length);
+	// 			if(storeLocal.data.all.length !== 0){
+	// 				console.log('checking flag status');
+	// 				console.log(j);
+	// 				console.log(k);
+	// 				if(store.data.all[i].city === storeLocal.data.all[k].city){
+	// 					flag = 1;					
+	// 				}
+	// 			}else{
+	// 				flag = 1;
+	// 			}
+	// 			if(flag === 1){
+	// 				console.log('newpro');
+	// 				var newpro = store.data.all[i];
+	// 				console.log(newpro);
+	// 				console.log('setting an item in the data store at location '+ t);
+	// 				console.log(store.data);
+	// 				// console.log('Name:');
+	// 				// console.log(index.data.products[i].name);
+	// 				// console.log('Prep:');
+	// 				// console.log(index.data.products[i].preparation);
+	// 				storeLocal.add(newpro);
+	// 				console.log('Added new city');
+	// 				t++;
+	// 			}
+	// 			flag = 0;
+	// 			var k = j;
+	// 		}
 			
-		}
-	},
+	// 	}
+	// },
 	onChooseLocation: function(index, record){
 		// We first check to see if a location is chosen, if one is we sort by locataion,
 		// then we check to see if a product is chosen, if one is we sort by product
 		console.log('In controller(home): Drop Down list Location');
-		this.onLoadLocationStore();
-		console.log('Location is: '+ record._value.data.city); 
-		SeaGrant_Proto.location = record._value.data.city;
+		// this.onLoadLocationStore();
+		var key = 0;
+		var LocStore = Ext.getStore('Location');
+		if(key === 0){
+			LocStore.insert(0, [
+				{
+					locations: 'Please choose a location',
+					id: 0
+				}
+			]);
+			key = 1;
+		}
+		// changed  in order to check the locations for drop down menus
+		console.log('Location is: '+ record._value.data.locations); 
+		SeaGrant_Proto.location = record._value.data.locations;
+		// console.log('Location is: '+ record._value.data.city); 
+		// SeaGrant_Proto.location = record._value.data.city;
 		// ALL FILTERS ONLY TAKE STRINGS, NONE WORK WITH VARABLES
 		// THAT ARE SELECED USING DROP DOWN TABLES, EVEN TOSTRING()
 		// FUNCTION WILL NOT WORK
 		var store = Ext.data.StoreManager.lookup('Vendor');
+		// var store = Ext.data.StoreManager.lookup('Vendor');
 		// OLD DATA THAT WORKED TO FILTER BY LOCATION ONLY
 		// var locationfilter = new Ext.util.Filter({
 		// 	filterFn: function(item, record){
@@ -283,6 +298,7 @@ Ext.define('SeaGrant_Proto.controller.List', {
 		// });
 		// store.clearFilter(); // this is the fix
 		// store.filter(locationfilter); //now it works
+
 		var len = store.data.all.length;
 		if(SeaGrant_Proto.location !== 'Please choose a location'){
 			var locationfilter = new Ext.util.Filter({
@@ -373,6 +389,17 @@ Ext.define('SeaGrant_Proto.controller.List', {
 		// We first check to see if a location is chosen, if one is we sort by locataion,
 		// then we check to see if a product is chosen, if one is we sort by product
 		console.log('In controller(home): Drop Down list Products');
+		var key = 0;
+		var ProdStore = Ext.getStore('Product');
+		if(key === 0){
+			ProdStore.insert(0, [
+				{
+					name: 'Please choose a product',
+					id: 0
+				}
+			]);
+			key = 1;
+		}
 		// console.log(record);
 		console.log('Product is: '+ record._value.data.name); 
 		SeaGrant_Proto.product = record._value.data.name;
@@ -485,10 +512,9 @@ Ext.define('SeaGrant_Proto.controller.List', {
 		SeaGrant_Proto.cent = new Array();
 		for (k = 0; k < SeaGrant_Proto.VstoreLength; k++){
 			// NOTE: I swapped the lat and long for now because they were swapped in the api 
-			// (this is for testing purposes, so that I get correct lat/longs for google maps)
-			lat = SeaGrant_Proto.Litem[k].lng;
+			lat = SeaGrant_Proto.Litem[k].lat;
 			console.log(lat);
-			lng = SeaGrant_Proto.Litem[k].lat;
+			lng = SeaGrant_Proto.Litem[k].lng;
 			console.log(lng);
 			SeaGrant_Proto.cent[k] = new google.maps.LatLng(lat, lng);
 
@@ -664,6 +690,13 @@ Ext.define('SeaGrant_Proto.controller.List', {
 	// Initialize functions
 	launch: function(){
 		this.callParent(arguments);
+		// var LocStore = Ext.getStore('Location');
+		// LocStore.insert(1, [
+		// 	{
+		// 		city: 'Please choose a location',
+		// 		id: 1
+		// 	}
+		// ]);
 		console.log("launch");
 	},
 	init: function(){

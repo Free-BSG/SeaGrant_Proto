@@ -3,15 +3,22 @@ Ext.define('SeaGrant_Proto.store.Location', {
 	// requires: 'Ext.data.proxy.LocalStorage',
 	// id: 'thisStuff',
 	config: {
-		model: 'SeaGrant_Proto.model.Vendors',
+		model: 'SeaGrant_Proto.model.Locations',
 		autoLoad: true,
 		proxy: {
 			type: 'ajax',
-			url: 'http://seagrant-staging-api.osuosl.org/vendors',
+			// url: 'newLocations.json',
+			url: 'http://seagrant-staging-api.osuosl.org/1/locations',
 			reader: {
 				type: 'json',
-				rootProperty: 'vendors'
+				// rootProperty: 'locations'
 			}
-		}
+		},
+		data: [
+			{
+				city: 'Please choose a location',
+				id: 0
+			}
+		]
 	}
 });

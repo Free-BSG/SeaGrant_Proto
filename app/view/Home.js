@@ -41,7 +41,7 @@ Ext.define('SeaGrant_Proto.view.Home', {
 						itemId: 'selectlocation', 
 						label: 'Location',
 						labelWrap: true,
-						displayField: 'city',
+						displayField: 'locations',
 						store: 'Location',
 						valueField: 'id'
 					},
