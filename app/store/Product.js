@@ -6,11 +6,17 @@ Ext.define('SeaGrant_Proto.store.Product', {
 		autoLoad: true,
 		proxy: {
 			type: 'ajax',
-			url: 'http://seagrant-staging-api.osuosl.org/products',
+			url: 'http://seagrant-staging-api.osuosl.org/1/products',
 			reader: {
 				type: 'json',
 				rootProperty: 'products'
 			}
-		}
+		},
+		data: [
+			{
+				name: 'Please choose a product',
+				id: 0
+			}
+		]
 	}
 });

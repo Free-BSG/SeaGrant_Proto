@@ -32,7 +32,7 @@ Ext.define('SeaGrant_Proto.view.Detail', {
 				xtype: 'panel',
 				itemId: 'infoBlock',
 				tpl: '</pre><div class="list-item-title">{name}</div><div class="list-item-description">{description}</div><div class="list-item-phone">Phone #: {phone}</div><div class="list-item-description">Representative: {contact_name}</div><div class="list-item-email">E-mail: {email}</div><div class="list-item-website">Website: {website}</div><pre>'
-			},			
+			},	
 			{
 				config: {
 					scrollable: {
