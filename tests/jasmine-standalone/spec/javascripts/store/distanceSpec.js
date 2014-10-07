@@ -2,37 +2,23 @@ describe('SeaGrant_Proto.store.Distance',function() {
 
     // Ext.require('SeaGrant_Proto.store.Distance');
 
-	 var store;
+    var store;
  
     beforeEach(function() {
-        //Set up globals
-        // console.log('in before each function');
-		jasmine.Ajax.install();
-        // console.log('Ajax is installed');
-        // for some reason this line doesn't work and store is not created.
-		store = Ext.create('SeaGrant_Proto.store.Distance');
-        // console.log('store created');
-        // console.log(store);
+	jasmine.Ajax.install();
+	store = Ext.create('SeaGrant_Proto.store.Distance');
     });
 
     afterEach(function() {
-        //Take down globals
-
-        //This looks like it should be leaky, check the sencha API for
-        //something like the model.destroy() function.
-		jasmine.Ajax.uninstall();
+	jasmine.Ajax.uninstall();
         store = null;
-        // console.log('store removed');
     });
 
-	it('exists', function() {
-        // console.log('In exists function');
-        // console.log(store);
+    it('exists', function() {
         expect(store.$className).toEqual('SeaGrant_Proto.store.Distance');
     });
 
     it('Is populated with distance data', function(){
-        // console.log(store.data);
         expect(store.data.items[0].data.val).toEqual(200);
     });
 });
