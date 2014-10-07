@@ -11,13 +11,13 @@ Ext.define('SeaGrant_Proto.store.Location', {
 			url: 'http://seagrant-staging-api.osuosl.org/1/locations',
 			reader: {
 				type: 'json',
-				// rootProperty: 'locations'
+				rootProperty: 'locations'
 			}
 		},
 		data: [
 			{
-				city: 'Please choose a location',
-				id: 0
+				location: 0,
+				name: 'Please choose a location'				
 			}
 		]
 	}

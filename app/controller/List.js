@@ -272,16 +272,16 @@ Ext.define('SeaGrant_Proto.controller.List', {
 		var LocStore = Ext.getStore('Location');
 		if(key === 0){
 			LocStore.insert(0, [
-				{
-					locations: 'Please choose a location',
+				{					
+					name: 'Please choose a location',
 					id: 0
 				}
 			]);
 			key = 1;
 		}
 		// changed  in order to check the locations for drop down menus
-		console.log('Location is: '+ record._value.data.locations); 
-		SeaGrant_Proto.location = record._value.data.locations;
+		console.log('Location is: '+ record._value.data.name); 
+		SeaGrant_Proto.location = record._value.data.name;
 		// console.log('Location is: '+ record._value.data.city); 
 		// SeaGrant_Proto.location = record._value.data.city;
 		// ALL FILTERS ONLY TAKE STRINGS, NONE WORK WITH VARABLES
@@ -380,8 +380,8 @@ Ext.define('SeaGrant_Proto.controller.List', {
 				}
 			}			
 		}
-		console.log('vendcount2:');
-		console.log(vendcount);
+		// console.log('vendcount2:');
+		// console.log(vendcount);
 		crud.setData(vendcount); // needed to display tpl data on home view
 		Ext.Viewport.setActiveItem(homeView);
 	},
@@ -400,7 +400,6 @@ Ext.define('SeaGrant_Proto.controller.List', {
 			]);
 			key = 1;
 		}
-		// console.log(record);
 		console.log('Product is: '+ record._value.data.name); 
 		SeaGrant_Proto.product = record._value.data.name;
 		var store = Ext.data.StoreManager.lookup('Vendor');
@@ -444,7 +443,7 @@ Ext.define('SeaGrant_Proto.controller.List', {
 		}
 
 		var homeView = this.getHomeView();
-		var crud = homeView.getComponent('vendnum'); // gets our display item in from the home page
+		var VendCView = homeView.getComponent('vendnum'); // gets our display item in from the home page
 		var vendcount;
 		// This defines how the tpl data is printed out given the drop down table states
 		if ((SeaGrant_Proto.location !== 'Please choose a location') || (SeaGrant_Proto.product !== 'Please choose a product')){
@@ -484,7 +483,7 @@ Ext.define('SeaGrant_Proto.controller.List', {
 			}
 			
 		}
-		crud.setData(vendcount); // needed to display tpl data on home view
+		VendCView.setData(vendcount); // needed to display tpl data on home view
 		Ext.Viewport.setActiveItem(homeView);
 	},	
 	onSortByVendorCommand: function(){
@@ -689,6 +688,7 @@ Ext.define('SeaGrant_Proto.controller.List', {
 	},
 	// Initialize functions
 	launch: function(){
+		SeaGrant_Proto.LocKey = 1;
 		this.callParent(arguments);
 		// var LocStore = Ext.getStore('Location');
 		// LocStore.insert(1, [
@@ -697,6 +697,9 @@ Ext.define('SeaGrant_Proto.controller.List', {
 		// 		id: 1
 		// 	}
 		// ]);
+		// this.onChooseLocation();
+		// this.onChooseProduct();
+
 		console.log("launch");
 	},
 	init: function(){
