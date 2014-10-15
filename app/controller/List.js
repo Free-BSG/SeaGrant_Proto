@@ -58,29 +58,6 @@ Ext.define('SeaGrant_Proto.controller.List', {
 	onSetUseLocation: function(index, record){
 		console.log('In controller(home): User Location toggle');
 		console.log(record._component._value[0]);
-		// console.log(record);
-		// this works great in browser, but not on the device. When loaded on the device, the app will not even open
-		// if(record._component._value[0] == 1){
-		// 	// This updates the user's location and how far from their location they would like to search for vendors/products
-		// 	Ext.device.Geolocation.watchPosition({
-		// 	    frequency: 3000, // Update every 3 seconds
-		// 	    callback: function(position) {
-		// 	        console.log('Position updated!', position.coords);
-		// 	        // console.log(index._items.items[2]._value.data.val);
-		// 			var dist = index._items.items[2]._value.data.val;
-		// 	    },
-		// 	    failure: function() {
-		// 	        console.log('something went wrong!');
-		// 	    }
-		// 	});
-			
-		// }else{
-		// 	Ext.device.Geolocation.clearWatch();
-		// };
-
-		// testing using phonegap geolocation
-		// on device, the on success function is never run, because watchID instantiation never gets into on success,
-		// a watchID is made, but even if we explicitly call onSuccess, the element can't be set, because then position is undefined
 		if(record._component._value[0] === 1){
 			// This updates the user's location and how far from their location they would like to search for vendors/products
 			// Wait for PhoneGap to load
@@ -124,71 +101,12 @@ Ext.define('SeaGrant_Proto.controller.List', {
 		        alert('code: '    + error.code    + '\n' +
 		              'message: ' + error.message + '\n');
 		    }
-
-		    // THIS IS THE SECONDARY PHONEGAP GEOLOCATION TEST
-		    // onSuccess Callback
-			//   This method accepts a `Position` object, which contains
-			//   the current GPS coordinates
-			//
-			// function onSuccess(position) {
-			// 	console.log('We are finally successful');
-			//     var element = document.getElementById('geolocation');
-			//     element.innerHTML = 'Latitude: '  + position.coords.latitude      + '<br />' +
-			//                         'Longitude: ' + position.coords.longitude     + '<br />' +
-			//                         '<hr />'      + element.innerHTML;
-			// }
-
-			// // onError Callback receives a PositionError object
-			// //
-			// function onError(error) {
-			//     alert('code: '    + error.code    + '\n' +
-			//           'message: ' + error.message + '\n');
-			// }
-
-			// // Options: retrieve the location every 3 seconds
-			// //
-			// console.log('Before watchID');
-			// var watchID = navigator.geolocation.watchPosition(onSuccess, onError, { frequency: 3000 });
-			// console.log('Now we have a watchID');
-			// console.log(watchID);
-
 			
 		}else{
 			console.log('USER LOCATION IS TURNED OFF NOW!');
 			console.log(watchID);
 			navigator.geolocation.clearWatch(watchID);
 		}
-
-		// testing geolocation using utils
-		// doesn't return anything on device
-		// var geo = new Ext.util.GeoLocation({
-		//     autoUpdate: true,
-		//     listeners: {
-		//         locationupdate: function (geo) {
-		//             // alert('New latitude: ' + geo.latitude);
-		//             console.log(geo.latitude);
-		//         },
-		//         locationerror: function (   geo,
-		//                                     bTimeout, 
-		//                                     bPermissionDenied, 
-		//                                     bLocationUnavailable, 
-		//                                     message) {
-		//             if(bTimeout){
-		//                 alert('Timeout occurred.');
-		//             }
-		//             else{
-		//                 alert('Error occurred.');
-		//             }
-		//         }
-		//     }
-		// });
-		// if(record._component._value[0] == 1){
-		// 	geo.updateLocation();
-		// 	geo.autoUpdate = true
-		// }else{
-		// 	// no geolocation update
-		// 	geo.autoUpdate = false
-		// }
 	},
 	// This function may be unnecessary due to the fact that we set the distance in the callback function above
 	onSetDistance: function(index, record){
@@ -196,73 +114,6 @@ Ext.define('SeaGrant_Proto.controller.List', {
 		// console.log(record._value.data.val);
 		SeaGrant_Proto.dist = record._value.data.val;
 	},
-	// onLoadLocationStore: function(){
-	// 	console.log('In the init function');
-	// 	// THIS CREATES AN ARRAY TO CALL
-	// 	// console.log('Starting Initialize');
-	// 	// var store = Ext.data.StoreManager.lookup('Vendor');
-	// 	// SeaGrant_Proto.local = [];
-	// 	// var temploc;
-	// 	// for(var i = 0; i < store.getCount(); i++){
-	// 	// 	temploc = store.getAt(i).data.city;
-	// 	// 	Ext.Array.include(SeaGrant_Proto.local, temploc);
-	// 	// 	// console.log('Current City:');
-	// 	// 	// console.log(store.getAt(i).data.city);
-	// 	// 	// console.log('The latest array value');
-	// 	// 	// console.log(SeaGrant_Proto.Local[i].data.city);
-	// 	// }
-
-	// 	// THIS WILL INSTANTIATE A NEW STORE FOR THE LOCATION DROP DOWN LIST TO REFERENCE
-	// 	var store = Ext.data.StoreManager.lookup('Vendor');
-	// 	var storeLocal = Ext.data.StoreManager.lookup('Location');
-	// 	// console.log(stuff);
-	// 	// console.log('storeStuff Items: ');
-	// 	// console.log(storeStuff.data.items[0]);
-	// 	storeLocal.removeAll();
-	// 	// console.log(storeStuff.data.items);
-	// 	console.log(store);
-	// 	console.log(storeLocal);
-	// 	var flag;
-	// 	console.log(store.data.all);
-	// 	console.log(store.data.all.length);
-	// 	console.log(store.data.length);
-	// 	var t = 0
-	// 	// Store is populated with items from selected vendor
-	// 	for(var i = 0; i < 15; i++){
-	// 		console.log('IN FIRST FOR LOOP I');
-	// 		for(var j = 0; j <= storeLocal.data.all.length; j++){
-	// 			console.log('IN SECOND FOR LOOP J');
-	// 			console.log(storeLocal.data.all.length);
-	// 			if(storeLocal.data.all.length !== 0){
-	// 				console.log('checking flag status');
-	// 				console.log(j);
-	// 				console.log(k);
-	// 				if(store.data.all[i].city === storeLocal.data.all[k].city){
-	// 					flag = 1;					
-	// 				}
-	// 			}else{
-	// 				flag = 1;
-	// 			}
-	// 			if(flag === 1){
-	// 				console.log('newpro');
-	// 				var newpro = store.data.all[i];
-	// 				console.log(newpro);
-	// 				console.log('setting an item in the data store at location '+ t);
-	// 				console.log(store.data);
-	// 				// console.log('Name:');
-	// 				// console.log(index.data.products[i].name);
-	// 				// console.log('Prep:');
-	// 				// console.log(index.data.products[i].preparation);
-	// 				storeLocal.add(newpro);
-	// 				console.log('Added new city');
-	// 				t++;
-	// 			}
-	// 			flag = 0;
-	// 			var k = j;
-	// 		}
-			
-	// 	}
-	// },
 	onChooseLocation: function(index, record){
 		// We first check to see if a location is chosen, if one is we sort by locataion,
 		// then we check to see if a product is chosen, if one is we sort by product
@@ -273,15 +124,15 @@ Ext.define('SeaGrant_Proto.controller.List', {
 		if(key === 0){
 			LocStore.insert(0, [
 				{
-					locations: 'Please choose a location',
+					name: 'Please choose a location',
 					id: 0
 				}
 			]);
 			key = 1;
 		}
 		// changed  in order to check the locations for drop down menus
-		console.log('Location is: '+ record._value.data.locations); 
-		SeaGrant_Proto.location = record._value.data.locations;
+		console.log('Location is: '+ record._value.data.name); 
+		SeaGrant_Proto.location = record._value.data.name;
 		// console.log('Location is: '+ record._value.data.city); 
 		// SeaGrant_Proto.location = record._value.data.city;
 		// ALL FILTERS ONLY TAKE STRINGS, NONE WORK WITH VARABLES
