@@ -485,7 +485,11 @@ Ext.define('SeaGrant_Proto.controller.List', {
 		// console.log(storeStuff.data.items); 
 		// THIS LOOP OPENS THE INFO PIN THAT CORESPONDS WITH THE SELETED LIST ITEM
 		for(i = 0; i < SeaGrant_Proto.marker.length; i++){
+			console.log('index id');
+			console.log(index.id);
+			console.log(SeaGrant_Proto.marker[i].info.data.id);
 			if(SeaGrant_Proto.marker[i].info.data.id === index.id){
+				console.log('in if statement');
 				SeaGrant_Proto.infowindow.setContent(SeaGrant_Proto.marker[i].info.content); // sets the infowindow that coresponds to the selected list
 		        SeaGrant_Proto.infowindow.open(SeaGrant_Proto.gMap, SeaGrant_Proto.marker[i]); // this opens the infowindow defined above
 		    }
