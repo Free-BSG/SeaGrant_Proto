@@ -485,11 +485,7 @@ Ext.define('SeaGrant_Proto.controller.List', {
 		// console.log(storeStuff.data.items); 
 		// THIS LOOP OPENS THE INFO PIN THAT CORESPONDS WITH THE SELETED LIST ITEM
 		for(i = 0; i < SeaGrant_Proto.marker.length; i++){
-			console.log('index id');
-			console.log(index.id);
-			console.log(SeaGrant_Proto.marker[i].info.data.id);
-			if(SeaGrant_Proto.marker[i].info.data.id === index.id){
-				console.log('in if statement');
+			if(SeaGrant_Proto.marker[i].info.data.id === index.data.id){
 				SeaGrant_Proto.infowindow.setContent(SeaGrant_Proto.marker[i].info.content); // sets the infowindow that coresponds to the selected list
 		        SeaGrant_Proto.infowindow.open(SeaGrant_Proto.gMap, SeaGrant_Proto.marker[i]); // this opens the infowindow defined above
 		    }
@@ -548,6 +544,9 @@ Ext.define('SeaGrant_Proto.controller.List', {
 	// stuff	######################################################################################	INFO
 	onViewBackDetailCommand: function(){
 		console.log('In controller(info): Back to Detail Page Button');
+		// This will get rid of the selection when we navigate back to the detail page
+		var infoItems = this.getInfoView();
+		infoItems._items.items[1].deselect(infoItems._items.items[1].selected.items[0]);
 		Ext.Viewport.animateActiveItem(this.getDetailView(), this.slideRightTransition);
 	},
 	onViewSpecificCommand: function(){
