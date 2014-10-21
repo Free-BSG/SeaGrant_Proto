@@ -27,6 +27,7 @@ Ext.define('SeaGrant_Proto.controller.List', {
 			listView: {
 				viewBackHomeCommand: 'onViewBackHomeCommand',
 				viewDetailCommand: 'onViewDetailCommand',
+				viewLpageListHighlightCommand: 'onViewLpageListHighlightCommand',
 				viewLpageListItemCommand: 'onViewLpageListItemCommand'
 			},
 			detailView: {
@@ -90,20 +91,8 @@ Ext.define('SeaGrant_Proto.controller.List', {
 		// var loc = this.getHomeView();
 		// console.log(record);
 		SeaGrant_Proto.location = record._value.data.title;
-		// console.log('Location is: '+ location);
-		// ALL FILTERS ONLY TAKE STRINGS, NONE WORK WITH VARABLES
-		// THAT ARE SELECED USING DROP DOWN TABLES, EVEN TOSTRING()
-		// FUNCTION WILL NOT WORK
 		var store = Ext.data.StoreManager.lookup('Vendor');
-		// OLD DATA THAT WORKED TO FILTER BY LOCATION ONLY
-		// var locationfilter = new Ext.util.Filter({
-		// 	filterFn: function(item, record){
-		// 		return item.get('city') === SeaGrant_Proto.location;
-		// 	},
-		// 	root: 'data'
-		// });
-		// store.clearFilter(); // this is the fix
-		// store.filter(locationfilter); //now it works
+		var pstore = Ext.data.StoreManager.lookup('ProductList');
 		var len = store.data.all.length;
 		if(SeaGrant_Proto.location !== 'Please choose a location'){
 			var locationfilter = new Ext.util.Filter({
@@ -118,7 +107,8 @@ Ext.define('SeaGrant_Proto.controller.List', {
 			store.clearFilter();
 		}
 		if(SeaGrant_Proto.product !== 'Please choose a product'){
-			// console.log('IN PROD FILTER');
+			var view = this.getListView();
+			view.down('list').setStore(pstore);
 			var prodFilter = new Ext.util.Filter({
 				filterFn: function(item, record){
 					for(b = 0; b < item.data.products.length; b++){ // cycles through the vendor's products
@@ -131,6 +121,42 @@ Ext.define('SeaGrant_Proto.controller.List', {
 				root: 'data'
 			});
 			store.filter(prodFilter);
+			// pstore is populated with items from selected vendor
+			var countLen = 0;
+			var flag = 0;
+			var addVendor;
+			var newNum = 0;
+			pstore.removeAll();
+			for(i = 0; i < store.data.items.length; i++){
+				for(j = 0; j < store.data.items[i].data.products.length; j++){
+					flag = 0;
+					for(k = 0; k < pstore.data.length; k++){
+						// check to see if product and prep already exist
+						if((store.data.items[i].data.products[j].name === pstore.data.items[k].data.name) && (store.data.items[i].data.products[j].preparation === pstore.data.items[k].data.preparation)){
+							addVendor = store.data.items[i].data.name;
+							newNum = k;
+							flag = 1;
+						}					
+					}
+					// if prod/prep exist, add a new vendor to the vendors list
+					if(flag === 1){
+						pstore.data.items[newNum].data.vendors = addVendor;
+					}
+					// if the prod/prep DNE, then creat a new product from the current vendor as long as its name is same as chosen product name
+					if((flag === 0) && (store.data.items[i].data.products[j].name === SeaGrant_Proto.product)){
+						var newpro = {
+							name: store.data.items[i].data.products[j].name, 
+							preparation: store.data.items[i].data.products[j].preparation,
+							vendors: store.data.items[i].data.name
+						};
+						pstore.add(newpro);
+					}
+				}
+			}	
+		}else{
+			// console.log('vendor store set');
+			var view = this.getListView();
+			view.down('list').setStore(store);
 		}
 		
 		// THIS FINDS THE NUMBER OF VENDORS AFTER THE SORT
@@ -196,10 +222,11 @@ Ext.define('SeaGrant_Proto.controller.List', {
 		console.log('Product is: '+ record._value.data.name); 
 		SeaGrant_Proto.product = record._value.data.name;
 		var store = Ext.data.StoreManager.lookup('Vendor');
+		var pstore = Ext.data.StoreManager.lookup('ProductList');
 		// console.log(store.data.all);
 		var len = store.data.all.length;
 		// console.log(store);
-		if(SeaGrant_Proto.location !== 'Please choose a location'){
+		if(SeaGrant_Proto.location !== 'Please choose a location'){			
 			// console.log('IN LOC FILTER');
 			var locationfilter = new Ext.util.Filter({
 				filterFn: function(item, record){
@@ -209,22 +236,60 @@ Ext.define('SeaGrant_Proto.controller.List', {
 			});
 			store.clearFilter();
 			store.filter(locationfilter);
-		} else{
+		}else{
+			
 			store.clearFilter();
 		}
 		if(SeaGrant_Proto.product !== 'Please choose a product'){
+			var view = this.getListView();
+			view.down('list').setStore(pstore);
 			var prodFilter = new Ext.util.Filter({
 				filterFn: function(item, record){
-					for(b = 0; b < item.data.products.length; b++){ // cycles through the vendor's products
-						// console.log(b+'  '+item.data.products[b].name);
+					for(b = 0; b < item.data.products.length; b++){ // cycles through the vendor's products// console.log(b+'  '+item.data.products[b].name);
 						if(item.data.products[b].name === SeaGrant_Proto.product){ // returns true for vendors with selected product
 							return item.data.products[b].name === SeaGrant_Proto.product;
 						}
 					}				
 				},
 				root: 'data'
-			});		
+			});
 			store.filter(prodFilter);
+			// pstore is populated with items from selected vendor
+			var countLen = 0;
+			var flag = 0;
+			var addVendor;
+			var newNum = 0;
+			pstore.removeAll();
+			for(i = 0; i < store.data.items.length; i++){
+				for(j = 0; j < store.data.items[i].data.products.length; j++){
+					flag = 0;
+					for(k = 0; k < pstore.data.length; k++){
+						// check to see if product and prep already exist
+						if((store.data.items[i].data.products[j].name === pstore.data.items[k].data.name) && (store.data.items[i].data.products[j].preparation === pstore.data.items[k].data.preparation)){
+							addVendor = store.data.items[i].data.name;
+							newNum = k;
+							flag = 1;
+						}					
+					}
+					// if prod/prep exist, add a new vendor to the vendors list
+					if(flag === 1){
+						pstore.data.items[newNum].data.vendors = addVendor;
+					}
+					// if the prod/prep DNE, then creat a new product from the current vendor as long as its name is same as chosen product name
+					if((flag === 0) && (store.data.items[i].data.products[j].name === SeaGrant_Proto.product)){
+						var newpro = {
+							name: store.data.items[i].data.products[j].name, 
+							preparation: store.data.items[i].data.products[j].preparation,
+							vendors: store.data.items[i].data.name
+						};
+						pstore.add(newpro);
+					}
+				}
+			}	
+		}else{
+			// console.log('vendor store set');
+			var view = this.getListView();
+			view.down('list').setStore(store);
 		}
 
 		// NEEDED TO SET MAP MARKERS IN ONGOBUTTONCOMMAND
@@ -278,6 +343,8 @@ Ext.define('SeaGrant_Proto.controller.List', {
 			
 		}
 		crud.setData(vendcount); // needed to display tpl data on home view
+		console.log('SeaGrant_Proto.tplStore');
+		console.log(SeaGrant_Proto.tplStore);
 		Ext.Viewport.setActiveItem(homeView);
 	},	
 	onSortByVendorCommand: function(){
@@ -316,7 +383,7 @@ Ext.define('SeaGrant_Proto.controller.List', {
 		listItems._items.items[2].deselect(listItems._items.items[2].selected.items[0]);		
 		Ext.Viewport.animateActiveItem(this.getHomeView(), this.slideRightTransition);
 	},
-		onViewDetailCommand: function(){
+	onViewDetailCommand: function(){
 		console.log('In controller(list): View Detail Page Button');
 		Ext.Viewport.animateActiveItem(this.getDetailView(), this.slideLeftTransition);
 	},		
@@ -369,6 +436,15 @@ Ext.define('SeaGrant_Proto.controller.List', {
 		// note, "self" is the key, if I use "this" it will not refrence the correct data
 		// THIS USES THE SAME DETAIL PAGE DATA POPULATING CODE THAT THE ON CLICK LIST ITEM EVENT DOES
 		SeaGrant_Proto.infoClickSelf.onViewLpageListItemCommand(this, SeaGrant_Proto.infoClickSelf, SeaGrant_Proto.storeItem.info);
+	},
+	onViewLpageListHighlightCommand: function(record, list, index){
+		// THIS LOOP OPENS THE INFO PIN THAT CORESPONDS WITH THE SELETED LIST ITEM
+		for(i = 0; i < SeaGrant_Proto.marker.length; i++){
+			if(SeaGrant_Proto.marker[i].info.data.id === index.id){
+				SeaGrant_Proto.infowindow.setContent(SeaGrant_Proto.marker[i].info.content); // sets the infowindow that coresponds to the selected list
+		        SeaGrant_Proto.infowindow.open(SeaGrant_Proto.gMap, SeaGrant_Proto.marker[i]); // this opens the infowindow defined above
+		    }
+		}
 	},		
 	onViewLpageListItemCommand: function(record, list, index){
 		console.log('In controller(list): Select list item');
@@ -377,22 +453,6 @@ Ext.define('SeaGrant_Proto.controller.List', {
 		var lv = this.getListView();
 		detailView.getAt(1).setData(index.data);
 		Ext.ComponentQuery.query('toolbar[itemId=detailPageToolbar]')[0].setTitle(index.data.name);
-		// console.log(index.data.name);
-		// var store = Ext.data.StoreManager.lookup('Vendor');
-		// console.log('This is the store.');
-		// console.log(index.getData());
-		// var productfilter = new Ext.util.Filter({
-		// 	filterFn: function(item, record){
-		// 		return item.get('name') === index.data.name;
-		// 	},
-		// 	root: 'data'
-		// });
-		// // console.log(index.data.products[0].name);
-		// console.log(index.data.products.name);
-		// store.clearFilter();
-		// store.filter(productfilter);
-		// console.log(detailView);
-
 		// Trying to pass product data from selected vendor to new store, so that we
 		// can use the new store to correctly use tpl print to make selectable list 
 		// items of each unique product.

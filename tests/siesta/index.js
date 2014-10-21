@@ -49,12 +49,14 @@ Harness.configure({
         '../../app/store/VendorInventory.js',
         '../../app/store/Education.js',
         '../../app/store/Distance.js',
+        '../../app/store/ProductList.js',
         // Models
         '../../app/model/Vendors.js',
         '../../app/model/Locations.js',
         '../../app/model/Products.js',
         '../../app/model/Test.js',
         '../../app/model/VendorInventories.js',
+        '../../app/model/ProductLists.js',
         '../../app.js'
         // json files
         // '../newVendors.json',

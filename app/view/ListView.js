@@ -3,6 +3,7 @@ Ext.define('SeaGrant_Proto.view.ListView', {
 	requires: ['Ext.form.FieldSet', 'Ext.TabPanel', 'Ext.dataview.List', 'Ext.MessageBox', 'SeaGrant_Proto.view.Map'],
     xtype: 'ListView',
 	alias: 'widget.listview',
+
 	config: {
 		layout: 'fit',
 		items: [
@@ -37,12 +38,15 @@ Ext.define('SeaGrant_Proto.view.ListView', {
 						directionLock: true
 					}
 				},
+				// I assumed that the commented out lines would make my list dynamic, but they are not doing what I expected
 				xtype: 'list',
 				itemId: 'Lpagelist',
-				store: 'Vendor',
+				// store: 'Vendor',
+				// store: SeaGrant_Proto.tplStore,
 				loadingText: 'Loading Notes ...',
 				emptyText: '</pre><div class="notes-list-empty-text">No notes found.</div><pre>',
-				itemTpl: '</pre><div class="list-item-name">{name}</div><pre>'
+				itemTpl: '</pre><div class="list-item-name">{name} {preparation}</div><pre>'
+				// itemTpl: '</pre><div class="list-item-name">'SeaGrant_Proto.writer'</div><pre>'
 			}
 		],
 		listeners: [
@@ -58,7 +62,12 @@ Ext.define('SeaGrant_Proto.view.ListView', {
 			},
 			{
 				delegate: '#Lpagelist',
-				event: 'itemtap',
+				event: 'itemsingletap',
+				fn: 'onLpagelistHighlight'
+			},
+			{
+				delegate: '#Lpagelist',
+				event: 'itemdoubletap',
 				fn: 'onLpagelistDisclose'
 			}
 		]
@@ -70,6 +79,10 @@ Ext.define('SeaGrant_Proto.view.ListView', {
 	onDetailButtonTap: function(){
 		console.log('onDetailButtonTap');
 		this.fireEvent('viewDetailCommand', this);
+	},
+	onLpagelistHighlight: function(list, record, target, index, evt, options){
+		console.log('viewLpageListHighlightCommand');
+		this.fireEvent('viewLpageListHighlightCommand', this, record, index);
 	},
 	onLpagelistDisclose: function(list, record, target, index, evt, options){
 		console.log('viewLpageListItemCommand');
