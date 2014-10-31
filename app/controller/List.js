@@ -398,7 +398,8 @@ Ext.define('SeaGrant_Proto.controller.List', {
 		for(i = 0; i < SeaGrant_Proto.marker.length; i++){
 			SeaGrant_Proto.marker[i].setMap(null);
 		}
-		SeaGrant_Proto.marker.length = 0;		
+		SeaGrant_Proto.marker.length = 0;
+		// Remove selection of list item		
 		var listItems = this.getListView();
 		listItems._items.items[2].deselect(listItems._items.items[2].selected.items[0]);		
 		Ext.Viewport.animateActiveItem(this.getHomeView(), this.slideRightTransition);
@@ -411,7 +412,7 @@ Ext.define('SeaGrant_Proto.controller.List', {
 	addMapMarkers: function(){
 		var self = this; // important to get the correct data to the viewport
 		SeaGrant_Proto.infoClickSelf = self;
-		// Variables for setting marker attributes
+		// Variables for setting marker
 		SeaGrant_Proto.lastI = null;
 		SeaGrant_Proto.lastNodeSet = new Array();
 		SeaGrant_Proto.lastNodeSet[0] = null;
@@ -432,6 +433,7 @@ Ext.define('SeaGrant_Proto.controller.List', {
 			SeaGrant_Proto.cent[k] = new google.maps.LatLng(lat, lng);
 			//THIS IS THE BLOCK OF CODE THAT USES THE MARKER AS AN ARRAY
 			// THIS FUNCTION CREATES EACH LIST ITEM MARKER
+			// SeaGrant_Proto.iconImage = '/images/red.png';
 			this.addAMapMarker(k, SeaGrant_Proto.animation);
         	// This gets the map bounds based on the markers
         	SeaGrant_Proto.bounds.extend(SeaGrant_Proto.marker[k].position);
@@ -655,36 +657,6 @@ Ext.define('SeaGrant_Proto.controller.List', {
 	// stuff	######################################################################################	DETAIL
 	onViewBackListCommand: function(record, index){
 		console.log('In controller(detail): Back to List Page Button');
-		var store = Ext.data.StoreManager.lookup('Vendor');
-		// console.log(record);
-		// console.log(index);
-		var len = store.data.all.length;
-		if(SeaGrant_Proto.location != 'Please choose a location'){
-			var locationfilter = new Ext.util.Filter({
-				filterFn: function(item, record){
-					return item.get('city') === SeaGrant_Proto.location;
-				},
-				root: 'data'
-			});
-			store.clearFilter(); // this is the fix
-			store.filter(locationfilter); //now it works
-		}else{
-			store.clearFilter();
-		}
-		if(SeaGrant_Proto.product != 'Please choose a product'){
-			var prodFilter = new Ext.util.Filter({
-				filterFn: function(item, record){
-					for(b = 0; b < item.data.products.length; b++){ // cycles through the vendor's products
-						// console.log(b+'  '+item.data.products[b].name);
-						if(item.data.products[b].name === SeaGrant_Proto.product){ // returns true for vendors with selected product
-							return item.data.products[b].name === SeaGrant_Proto.product;
-						}
-					}				
-				},
-				root: 'data'
-			});
-			store.filter(prodFilter);
-		}
 		Ext.Viewport.animateActiveItem(this.getListView(), this.slideRightTransition);
 	},
 	onViewInfoCommand: function(){
