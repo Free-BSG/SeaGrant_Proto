@@ -371,7 +371,8 @@ Ext.define('SeaGrant_Proto.controller.List', {
 		console.log('In controller(home): Product checkbox');
 	},
 	onViewGoCommand: function(){
-		console.log('In controller(home): Go to List Page Button');		
+		console.log('In controller(home): Go to List Page Button');	
+		SeaGrant_Proto.iconImage = '/images/red.png';	
 		this.addMapMarkers();
 		setTimeout(function() {
            SeaGrant_Proto.gMap.panTo(SeaGrant_Proto.cent[0]);
@@ -410,6 +411,13 @@ Ext.define('SeaGrant_Proto.controller.List', {
 	addMapMarkers: function(){
 		var self = this; // important to get the correct data to the viewport
 		SeaGrant_Proto.infoClickSelf = self;
+		// Variables for setting marker attributes
+		SeaGrant_Proto.lastI = null;
+		SeaGrant_Proto.lastNodeSet = new Array();
+		SeaGrant_Proto.lastNodeSet[0] = null;
+		SeaGrant_Proto.lent = 0;
+		SeaGrant_Proto.animation = null;
+		// SeaGrant_Proto.opnum = 0.7;
 		var lat;
 		var lng;
 		SeaGrant_Proto.infowindow = new google.maps.InfoWindow();
@@ -424,9 +432,21 @@ Ext.define('SeaGrant_Proto.controller.List', {
 			SeaGrant_Proto.cent[k] = new google.maps.LatLng(lat, lng);
 			//THIS IS THE BLOCK OF CODE THAT USES THE MARKER AS AN ARRAY
 			// THIS FUNCTION CREATES EACH LIST ITEM MARKER
-			SeaGrant_Proto.marker[k] = new google.maps.Marker({
+			this.addAMapMarker(k, SeaGrant_Proto.animation);
+        	// This gets the map bounds based on the markers
+        	SeaGrant_Proto.bounds.extend(SeaGrant_Proto.marker[k].position);
+        	
+		}
+	},
+	addAMapMarker: function(k, animation){
+		// I moved all of the code to create a single map marker with an infowindow and listener for that window
+		// out of the add map markers function in order to use it in the onViewLpageListHighlightCommand
+		SeaGrant_Proto.marker[k] = new google.maps.Marker({
 				map: SeaGrant_Proto.gMap,
-				animation: google.maps.Animation.DROP,
+				animation: animation,
+				// opacity: opnum,
+				// zIndex: google.maps.Marker.MAX_ZINDEX + 1,
+				icon: SeaGrant_Proto.iconImage,
 				position: SeaGrant_Proto.cent[k],
 				clickable: true
 			});			
@@ -436,8 +456,6 @@ Ext.define('SeaGrant_Proto.controller.List', {
         		data: SeaGrant_Proto.Litem[k],
         		Lpos: k // used to index and highlight the correct list item
         	});
-        	// This gets the map bounds based on the markers
-        	SeaGrant_Proto.bounds.extend(SeaGrant_Proto.marker[k].position);
         	// NOW WE ADD AN ON CLICK EVENT LISTENER TO EACH MARKER
         	// WE WILL USE THIS LISTENER TO OPEN THE SPECIFIC MARKER INFO THAT WAS CLICKED
         	google.maps.event.addListener(SeaGrant_Proto.marker[k], 'click', function(){
@@ -447,7 +465,6 @@ Ext.define('SeaGrant_Proto.controller.List', {
         		SeaGrant_Proto.infowindow.setContent(this.info.content); // this makes it so that only one info window is displayed at one time
         		SeaGrant_Proto.infowindow.open(SeaGrant_Proto.gMap, this); // this opens the infowindow defined above
         	});	
-		}
 	},
 	onInfoWindowClick: function(record, list, index){
 		var lv = SeaGrant_Proto.infoClickSelf.getListView();
@@ -460,26 +477,90 @@ Ext.define('SeaGrant_Proto.controller.List', {
 		var view = this.getListView();
 		console.log('list view');
 		console.log(view);
+		var t = 0;
+		var h;
 		// THIS LOOP OPENS THE INFO PIN THAT CORESPONDS WITH THE SELETED LIST ITEM
 		for(i = 0; i < SeaGrant_Proto.marker.length; i++){
-			console.log('SeaGrant_Proto.marker[i].info.data.id   '+ SeaGrant_Proto.marker[i].info.data.id +'   index.id   '+ index.id +'\n');
-			console.log('marker data   ');
-			console.log(SeaGrant_Proto.marker[i].info.data);
-			console.log('Index');
-			console.log(index.data);
+			// console.log('SeaGrant_Proto.marker[i].info.data.id   '+ SeaGrant_Proto.marker[i].info.data.id +'   index.id   '+ index.id +'\n');
+			// console.log('marker data   ');
+			// console.log(SeaGrant_Proto.marker[i].icon);
+			// console.log('Index');
+			// console.log(index.data);
 			if(view._items.items[2]._store._storeId === 'ProductList'){
-				for(j = 0; j < index.data.vendors.length; j++){
-					// Note: this only leaves the last marker infowinow open. But we want to change the color of the pins!
+				// Use this for loop to find all the vendors that sell this product
+				for(j = 0; j < index.data.vendors.length; j++){					
+					// this if statement finds vendors who carry the specific product
 					if(SeaGrant_Proto.marker[i].info.data.name === index.data.vendors[j]){
-						SeaGrant_Proto.infowindow.setContent(SeaGrant_Proto.marker[i].info.content); // sets the infowindow that coresponds to the selected list
-			        	SeaGrant_Proto.infowindow.open(SeaGrant_Proto.gMap, SeaGrant_Proto.marker[i]); // this opens the infowindow defined above
+						// check to make sure that we have a previous set of nodes to turn red again
+						// also checks that we only reset the nodes once when we search for and change 
+						// the new nodes for the new product to blue
+						if((SeaGrant_Proto.lastNodeSet[0] != null) && (t == 0)){
+							console.log("removing last set of blue markers");
+							console.log("SeaGrant_Proto.lent = "+ SeaGrant_Proto.lent);
+							for(h = 0; h < SeaGrant_Proto.lent; h++){
+								// get rid of last blue marker
+								SeaGrant_Proto.marker[SeaGrant_Proto.lastNodeSet[h]].setMap(null);
+								console.log('removed');
+								console.log(SeaGrant_Proto.lastNodeSet[h]);
+								// reset marker to red
+								SeaGrant_Proto.iconImage = '/images/red.png';
+								// Setting the animation to null
+								SeaGrant_Proto.animation = null;
+								// Set the opacity of the pin
+								// SeaGrant_Proto.opnum = 0.5;
+								// remake the red marker
+								this.addAMapMarker(SeaGrant_Proto.lastNodeSet[h], SeaGrant_Proto.animation, SeaGrant_Proto.opnum);
+								console.log('added');
+								// reset t so that the new set of nodes for a product are populated
+								t = 0;
+							}
+							SeaGrant_Proto.lent = 0;
+				        }
+				        // get rid of red marker for selected list item
+				        SeaGrant_Proto.marker[i].setMap(null);
+				        // reset marker to blue
+						SeaGrant_Proto.iconImage = '/images/blue.png';
+						// Setting the animation to drop
+						SeaGrant_Proto.animation = google.maps.Animation.DROP;
+						// Set the opacity of the pin
+						// SeaGrant_Proto.opnum = 1.0;
+						// make the blue marker
+						this.addAMapMarker(i, SeaGrant_Proto.animation, SeaGrant_Proto.opnum);
+						SeaGrant_Proto.marker[i].setZIndex(google.maps.Marker.MAX_ZINDEX + 1);
+						SeaGrant_Proto.lastNodeSet[t] = i;
+			   			t = t+1;
+			   			SeaGrant_Proto.lent = t;
 					}
 				}
 			}
 			if(view._items.items[2]._store._storeId === 'Vendor'){
-				if(SeaGrant_Proto.marker[i].info.data.id === index.id){
+				if(SeaGrant_Proto.marker[i].info.data.id === index.id){					
+					// This is setting the pin of the selected list item to be blue and popping open its infowindow
+					if(SeaGrant_Proto.lastI != null){
+						// get rid of last blue marker
+						SeaGrant_Proto.marker[SeaGrant_Proto.lastI].setMap(null);
+						// reset marker to red
+						SeaGrant_Proto.iconImage = '/images/red.png';
+						SeaGrant_Proto.animation = null;
+						// Set the opacity of the pin
+						// SeaGrant_Proto.opnum = 0.5;
+						// remake the red marker
+						this.addAMapMarker(SeaGrant_Proto.lastI, SeaGrant_Proto.animation, SeaGrant_Proto.opnum);						
+			        }
+			        // get rid of red marker for selected list item
+			        SeaGrant_Proto.marker[i].setMap(null);
+			        // reset marker to blue
+					SeaGrant_Proto.iconImage = '/images/blue.png';
+					SeaGrant_Proto.animation = google.maps.Animation.DROP;
+					// Set the opacity of the pin
+					// SeaGrant_Proto.opnum = 1.0;
+					// make the blue marker
+					this.addAMapMarker(i, SeaGrant_Proto.animation, SeaGrant_Proto.opnum);
+					SeaGrant_Proto.marker[i].setZIndex(google.maps.Marker.MAX_ZINDEX + 1);
+					// add data to blue marker info window and open it
 					SeaGrant_Proto.infowindow.setContent(SeaGrant_Proto.marker[i].info.content); // sets the infowindow that coresponds to the selected list
 			        SeaGrant_Proto.infowindow.open(SeaGrant_Proto.gMap, SeaGrant_Proto.marker[i]); // this opens the infowindow defined above
+					SeaGrant_Proto.lastI = i;
 			    }
 			}
 		}
@@ -517,14 +598,14 @@ Ext.define('SeaGrant_Proto.controller.List', {
 		// console.log('list view');
 		// console.log(view);
 
-		// THIS LOOP OPENS THE INFO PIN THAT CORESPONDS WITH THE SELETED LIST ITEM
-		for(i = 0; i < SeaGrant_Proto.marker.length; i++){
-			if(SeaGrant_Proto.marker[i].info.data.id === index.id){
-				SeaGrant_Proto.infowindow.setContent(SeaGrant_Proto.marker[i].info.content); // sets the infowindow that coresponds to the selected list
-		        SeaGrant_Proto.infowindow.open(SeaGrant_Proto.gMap, SeaGrant_Proto.marker[i]); // this opens the infowindow defined above
-		    }
-		}
-
+		// THIS LOOP OPENS THE INFO PIN THAT CORESPONDS WITH THE SELECTED LIST ITEM
+		// for(i = 0; i < SeaGrant_Proto.marker.length; i++){
+		// 	if(SeaGrant_Proto.marker[i].info.data.id === index.id){
+		// 		SeaGrant_Proto.infowindow.setContent(SeaGrant_Proto.marker[i].info.content); // sets the infowindow that coresponds to the selected list
+		//         SeaGrant_Proto.infowindow.open(SeaGrant_Proto.gMap, SeaGrant_Proto.marker[i]); // this opens the infowindow defined above
+		//     }
+		// }
+		this.onViewLpageListHighlightCommand(record, list, index);
 		
 		// console.log(index);
 		if(view._items.items[2]._store._storeId === 'Vendor'){
@@ -537,8 +618,9 @@ Ext.define('SeaGrant_Proto.controller.List', {
 				};
 				storeInventory.add(newpro);
 			}
-			SeaGrant_Proto.path[SeaGrant_Proto.pcount] = 'detail';
-        	SeaGrant_Proto.pcount = ++SeaGrant_Proto.pcount;
+			// for stack that tracks navigaion
+			// SeaGrant_Proto.path[SeaGrant_Proto.pcount] = 'detail';
+        	// SeaGrant_Proto.pcount = ++SeaGrant_Proto.pcount;
 			Ext.Viewport.animateActiveItem(detailView, this.slideLeftTransition);
 		}
 		if(view._items.items[2]._store._storeId === 'ProductList'){
@@ -562,12 +644,11 @@ Ext.define('SeaGrant_Proto.controller.List', {
 					console.log(productdetailView.getAt(1)._data);  
 				}
 			}
-			SeaGrant_Proto.path[SeaGrant_Proto.pcount] = 'productdetail';
-        	SeaGrant_Proto.pcount = ++SeaGrant_Proto.pcount;
+			// for stack that tracks navigaion
+			// SeaGrant_Proto.path[SeaGrant_Proto.pcount] = 'productdetail';
+        	// SeaGrant_Proto.pcount = ++SeaGrant_Proto.pcount;
 			Ext.Viewport.animateActiveItem(productdetailView, this.slideLeftTransition);
-		}
-		
-		
+		}		
 	},
 	// Functions dealing with 
 	// DETAIL
@@ -617,8 +698,6 @@ Ext.define('SeaGrant_Proto.controller.List', {
 		var view = this.getListView();
 		var detailView = this.getDetailView();
 		var productdetailView = this.getProductdetailView();
-		
-		
 		
 		var storeInventory = Ext.data.StoreManager.lookup('VendorInventory');
 		storeInventory.removeAll();
@@ -679,19 +758,18 @@ Ext.define('SeaGrant_Proto.controller.List', {
 
 			// search through the vendors that carry the item and find the one we are selecting, 
 			// so that we can use the data from the selected vendor
-			for(i = 0; i < vendorstore.data.items.length; i++){
-				if(vendorstore.data.items[i].data.name === index.data.name){
+			for(i = 0; i < vendorstore.data.all.length; i++){
+				if(vendorstore.data.all[i].data.name === index.data.name){
 					// populating the storeInventory with the vendor's products
-					for(j = 0; j < vendorstore.data.items[i].data.products.length; j++){
+					for(j = 0; j < vendorstore.data.all[i].data.products.length; j++){
 						var newpro = {
-							name: vendorstore.data.items[i].data.products[j].name, 
-							preparation: vendorstore.data.items[i].data.products[j].preparation
+							name: vendorstore.data.all[i].data.products[j].name, 
+							preparation: vendorstore.data.all[i].data.products[j].preparation
 						};
 						storeInventory.add(newpro); 
 					}
 					// Sets data for the info block on detail page
-					detailView.getAt(1).setData(vendorstore.data.items[i].data);
-					
+					detailView.getAt(1).setData(vendorstore.data.all[i].data);					
 				}
 			}
 			// adding a log item to the "stack"
