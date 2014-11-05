@@ -21,19 +21,19 @@ StartTest(function(t) {
 
     t.diag("Number of vendors test"); //#############################################################################################
     var num = Ext.ComponentQuery.query('panel[itemId=vendnum]');
-    console.log('This is the num: ');
-    console.log (num);
+    // console.log('This is the num: ');
+    // console.log (num);
     t.is(num[0]._itemId, 'vendnum', 'Number of Vendors panel exists');
 
     var print = Ext.ComponentQuery.query('panel[itemId=vendnum]');
-    console.log('This is the print: ');
-    console.log (print);
+    // console.log('This is the print: ');
+    // console.log (print);
     t.is(print[0]._tpl.html, '</pre><div class="vendnum">{th}{numItems}{v}{i}{loc}{w}{prod}{end}</div><pre>', 'Number of Vendors string prints out data in correct order');
 
     // User location distance test
     var dropd = Ext.ComponentQuery.query('selectfield[itemId=distance]');
-    console.log("Here is tog[0].config.name: ");
-    console.log(dropd);
+    // console.log("Here is tog[0].config.name: ");
+    // console.log(dropd);
     // This checks that a distance drop down menu exists
     t.is(dropd[0]._component._value, '200 miles', 'We have a drop down menu for distance from user location');
     // Now check that when the toggle is toggled, an event is fired and recieved by the controller

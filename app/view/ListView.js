@@ -3,7 +3,6 @@ Ext.define('SeaGrant_Proto.view.ListView', {
 	requires: ['Ext.form.FieldSet', 'Ext.TabPanel', 'Ext.dataview.List', 'Ext.MessageBox', 'SeaGrant_Proto.view.Map'],
     xtype: 'ListView',
 	alias: 'widget.listview',
-
 	config: {
 		layout: 'fit',
 		items: [
@@ -17,13 +16,20 @@ Ext.define('SeaGrant_Proto.view.ListView', {
 						xtype: 'button',
 						ui: 'action', 
 						text: 'back',
-						itemId: 'backHomeButton'
+						itemId: 'HomeButton'
 					},
 					{
 						xtype: 'button',
 						ui: 'action',
 						text: 'Detail',
 						itemId: 'detailButton'
+					},
+					{
+						xtype: 'button',
+						ui: 'action',
+						// text: 'Home',
+						iconCls: 'home',
+						itemId: 'backHomeButton'
 					}
 				]
 			},
@@ -51,9 +57,14 @@ Ext.define('SeaGrant_Proto.view.ListView', {
 		],
 		listeners: [
 			{
+				delegate: '#HomeButton',
+				event: 'tap',
+				fn: 'onBackHomeButtonTap'
+			},
+			{
 				delegate: '#backHomeButton',
 				event: 'tap',
-				fn: 'onBackButtonTap'
+				fn: 'onBackHomeButtonTap'
 			},
 			{
 				delegate: '#detailButton',
@@ -72,7 +83,7 @@ Ext.define('SeaGrant_Proto.view.ListView', {
 			}
 		]
 	},
-	onBackButtonTap: function(){
+	onBackHomeButtonTap: function(){
 		console.log('onBackButtonTap');
 		this.fireEvent('viewBackHomeCommand', this);
 	},

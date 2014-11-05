@@ -18,7 +18,7 @@ Ext.define('SeaGrant_Proto.view.ProductDetail', {
 					{
 						xtype: 'button',
 						ui: 'action',
-						text: 'back',
+						text: 'Back',
 						itemId: 'backListButton'
 					},
 					{
@@ -26,6 +26,13 @@ Ext.define('SeaGrant_Proto.view.ProductDetail', {
 						ui: 'action',
 						text: 'Info',
 						itemId: 'infoButton'
+					},
+					{
+						xtype: 'button',
+						ui: 'action',
+						// text: 'Home',
+						iconCls: 'home',
+						itemId: 'backHomeButton'
 					}
 				]
 			},
@@ -64,6 +71,11 @@ Ext.define('SeaGrant_Proto.view.ProductDetail', {
 				fn: 'onInfoButtonTap'
 			},
 			{
+				delegate: '#backHomeButton',
+				event: 'tap',
+				fn: 'onBackHomeButtonTap'
+			},
+			{
 				delegate: '#Dpagelist',
 				event: 'itemtap',
 				fn: 'onDpagelistDisclose'
@@ -73,6 +85,10 @@ Ext.define('SeaGrant_Proto.view.ProductDetail', {
 	onBackButtonTap: function(){
 		console.log('onBackButtonTap');
 		this.fireEvent('viewBackListCommand', this);
+	},
+	onBackHomeButtonTap: function(){
+		console.log('onBackButtonTap');
+		this.fireEvent('viewBackHomeCommand', this);
 	},
 	onInfoButtonTap: function(){
 		console.log('onInfoButtonTap');

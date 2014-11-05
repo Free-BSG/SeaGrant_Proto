@@ -8,14 +8,24 @@ StartTest(function(t) {
     t.is(tool[1].config.itemId, 'listPageToolbar', "We have a Header"); 
 
     // Back button test
+    var Bbtn = Ext.ComponentQuery.query('button[itemId=HomeButton]');
+    console.log("Here is Bbtn: ");
+    console.log(Bbtn[0]);
+    t.click(Bbtn);
+    // Check that button exists
+    t.is(Bbtn[0]._itemId, 'HomeButton', 'Back button exists.');
+    // Now check that it fires correct event to controller
+    t.is(Bbtn[0].eventDispatcher.listenerStacks.component.listview.viewBackHomeCommand.listeners.current[0].fn.$name, 'onViewBackHomeCommand', 'The Back button sends us to the Home page.');
+
+    // Home button test
     var Bbtn = Ext.ComponentQuery.query('button[itemId=backHomeButton]');
     // console.log("Here is Bbtn: ");
     // console.log(Bbtn[0]);
     t.click(Bbtn);
     // Check that button exists
-    t.is(Bbtn[0]._itemId, 'backHomeButton', 'Back button exists.');
+    t.is(Bbtn[0]._itemId, 'backHomeButton', 'Home button exists.');
     // Now check that it fires correct event to controller
-    t.is(Bbtn[0].eventDispatcher.listenerStacks.component.listview.viewBackHomeCommand.listeners.current[0].fn.$name, 'onViewBackHomeCommand', 'The Back button sends us to the Home page.');
+    t.is(Bbtn[0].eventDispatcher.listenerStacks.component.listview.viewBackHomeCommand.listeners.current[0].fn.$name, 'onViewBackHomeCommand', 'The Home button sends us to the Home page.');
    
     t.diag('Map tests');
     // Map view test

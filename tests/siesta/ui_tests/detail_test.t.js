@@ -18,6 +18,16 @@ StartTest(function(t) {
     // Now check that it fires correct event to controller
     t.is(Bbtn[0].eventDispatcher.listenerStacks.component.detail.viewBackListCommand.listeners.current[0].fn.$name, 'onViewBackListCommand', 'The Back button sends us to the List page.');
    
+   // Home button test
+    var Bbtn = Ext.ComponentQuery.query('button[itemId=backHomeButton]');
+    // console.log("Here is Bbtn: ");
+    // console.log(Bbtn[0]);
+    t.click(Bbtn);
+    // Check that button exists
+    t.is(Bbtn[0]._itemId, 'backHomeButton', 'Home button exists.');
+    // Now check that it fires correct event to controller
+    t.is(Bbtn[0].eventDispatcher.listenerStacks.component.listview.viewBackHomeCommand.listeners.current[0].fn.$name, 'onViewBackHomeCommand', 'The Home button sends us to the Home page.');
+   
     // Vendor/Product details
 
     t.diag('List tests');
