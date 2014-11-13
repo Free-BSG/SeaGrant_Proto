@@ -33,5 +33,12 @@ Ext.application({
         Ext.Viewport.add(Ext.create('SeaGrant_Proto.view.Detail')); 
         Ext.Viewport.add(Ext.create('SeaGrant_Proto.view.Info'));
         Ext.Viewport.add(Ext.create('SeaGrant_Proto.view.Specific'));
+        if(Ext.os.is('Android')){
+            document.addEventListener("backButton", Ext.bind(onBackKeyDown, this), false);
+            function onBackKeyDown(eve){
+                eve.preventDefault();
+                console.log("device back button was pressed");
+            }
+        }
     }
 });
