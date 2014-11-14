@@ -8,6 +8,10 @@ Ext.define('SeaGrant_Proto.controller.List', {
 	alias: 'cont',
 	config: {
 		refs: {
+			listback: 'listback',
+			detailback: 'detailback',
+			infoback: 'infoback',
+			specificback: 'specificback',
 			homeView: 'home',
 			listView: 'listview', 
 			detailView: 'detail',			
@@ -15,6 +19,12 @@ Ext.define('SeaGrant_Proto.controller.List', {
 			specificView: 'specific'
 		},
 		control: {
+			// listback: {
+			// 	viewBackHomeCommand: 'onViewBackHomeCommand'
+			// },
+			// detailback: {
+			// 	viewBackListCommand: 'onViewBackListCommand'
+			// },
 			homeView: {				
 				setUseLocation: 'onSetUseLocation',
 				setDistance: 'onSetDistance',
@@ -42,6 +52,12 @@ Ext.define('SeaGrant_Proto.controller.List', {
 			specificView: {
 				viewBackInfoCommand: 'onViewBackInfoCommand'
 			}
+		},
+		routes: {
+			'listback': 'onViewBackHomeCommand',
+			'detailback': 'onViewBackListCommand',
+			'infoback': 'onViewBackDetailCommand',
+			'specificback': 'onViewBackInfoCommand'
 		}
 	},
 	slideLeftTransition: {
@@ -378,7 +394,7 @@ Ext.define('SeaGrant_Proto.controller.List', {
 		listItems._items.items[2].deselect(listItems._items.items[2].selected.items[0]);		
 		Ext.Viewport.animateActiveItem(this.getHomeView(), this.slideRightTransition);
 	},
-		onViewDetailCommand: function(){
+	onViewDetailCommand: function(){
 		console.log('In controller(list): View Detail Page Button');
 		Ext.Viewport.animateActiveItem(this.getDetailView(), this.slideLeftTransition);
 	},		

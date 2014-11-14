@@ -20,6 +20,7 @@ Ext.Loader.setConfig({
  
 Ext.application({
     name: 'SeaGrant_Proto',
+    xtype: 'app',
 
     controllers: ["List"],
     models: ["Vendors", "Products", "Locations", "VendorInventories"],
@@ -38,6 +39,42 @@ Ext.application({
             function onBackKeyDown(eve){
                 eve.preventDefault();
                 console.log("device back button was pressed");
+                if(Ext.Viewport.getActiveItem().xtype ==  SeaGrant_Proto.view.Home.xtype){
+                    navigator.app.exitApp();
+                }
+                // Action is like a fired event from a view page, routes are assigned
+                // for the url sent back in the controller routes section. The routes
+                // section in the controller defines which function to call when an 
+                // action is sent to the controller from the device back button
+                if(Ext.Viewport.getActiveItem().xtype ==  SeaGrant_Proto.view.ListView.xtype){
+                    this.getApplication().getHistory().add(Ext.create('Ext.app.Action', {
+                        url: 'listback'
+                    }));
+                }
+                // Note after the device back button branch pull request is accepted and included
+                // in dev we will need to replace the detail view function with the commented
+                // out function below it in order to take into account navigation back from the
+                // productDetail page
+                if(Ext.Viewport.getActiveItem().xtype ==  SeaGrant_Proto.view.Detail.xtype){
+                    this.getApplication().getHistory().add(Ext.create('Ext.app.Action', {
+                        url: 'detailback'
+                    }));
+                }
+                // if((Ext.Viewport.getActiveItem().xtype ==  SeaGrant_Proto.view.Detail.xtype) | (Ext.Viewport.getActiveItem().xtype ==  SeaGrant_Proto.view.Productdetail.xtype)){
+                //     this.getApplication().getHistory().add(Ext.create('Ext.app.Action', {
+                //         url: 'detailback'
+                //     }));
+                // }
+                if(Ext.Viewport.getActiveItem().xtype ==  SeaGrant_Proto.view.Info.xtype){
+                    this.getApplication().getHistory().add(Ext.create('Ext.app.Action', {
+                        url: 'infoback'
+                    }));
+                }
+                if(Ext.Viewport.getActiveItem().xtype ==  SeaGrant_Proto.view.Specific.xtype){
+                    this.getApplication().getHistory().add(Ext.create('Ext.app.Action', {
+                        url: 'specificback'
+                    }));
+                }
             }
         }
     }
