@@ -74,6 +74,8 @@ Ext.define('SeaGrant_Proto.controller.List', {
 	onSetUseLocation: function(index, record){
 		console.log('In controller(home): User Location toggle');
 		console.log(record._component._value[0]);
+		// console.log(this);
+		SeaGrant_Proto.locThis = this;
 		if(record._component._value[0] === 1){
 			// This updates the user's location and how far from their location they would like to search for vendors/products
 			// Wait for PhoneGap to load
@@ -89,7 +91,7 @@ Ext.define('SeaGrant_Proto.controller.List', {
 		    function onDeviceReady() {
 		    	console.log('Device is ready!');
 		        // Update every 3 seconds
-		        var options = { frequency: 3000, enableHighAccuracy: true };
+		        var options = {timeout: 3000, maximumAge: 3000, enableHighAccuracy: true };
 		        watchID = navigator.geolocation.watchPosition(onSuccess, onError, options);
 		        console.log('got new watch id');
 		        console.log(watchID);
@@ -98,7 +100,7 @@ Ext.define('SeaGrant_Proto.controller.List', {
 		    // onSuccess Geolocation
 		    //
 		    function onSuccess(position) {
-		    	console.log('We have success');
+		    	// console.log('We have success');
 		        var element = document.getElementById('geolocation');
 		        element ={
 		        	lat: position.coords.latitude,
@@ -109,6 +111,18 @@ Ext.define('SeaGrant_Proto.controller.List', {
 		        //                     '<hr />'      + element.innerHTML;
 		        console.log('element:');
 		        console.log(element);
+		        console.log(SeaGrant_Proto.dist);
+		        // Make an set url for an api call with the current location and distance on go command
+		        // http://seagrant-staging.osuosl.org/1/vendors?lat=44.636154&lng=-124.042802&proximity=2
+		        // console.log(position);
+		        // console.log(this.Ext.List);
+		        // console.log('http://seagrant-staging-api.osuosl.org/1/vendors?lat='+ element.lat +'&lng='+ element.lng +'&proximity='+ SeaGrant_Proto.dist);
+		        // this.Ext.StoreManager.items[1]._proxy._url = 'http://seagrant-staging-api.osuosl.org/1/vendors?lat='+ element.lat +'&lng='+ element.lng +'&proximity='+ SeaGrant_Proto.dist;
+		        this.Ext.getStore('Vendor').getProxy().setUrl('http://seagrant-staging.osuosl.org/1/vendors?lat='+ element.lat +'&lng='+ element.lng +'&proximity='+ SeaGrant_Proto.dist);
+		   		this.Ext.getStore('Vendor').load();
+		   		SeaGrant_Proto.locThis.productSorting(this.Ext.Viewport.items.items[0]);
+		   		// console.log('this is the hoemview we send');
+		   		// console.log(this.Ext.Viewport.items.items[0]);
 		    }
 
 		    // onError Callback receives a PositionError object
@@ -121,13 +135,108 @@ Ext.define('SeaGrant_Proto.controller.List', {
 		}else{
 			console.log('USER LOCATION IS TURNED OFF NOW!');
 			console.log(watchID);
+			// console.log(this);
+			this._application._stores[1]._proxy._url = 'http://seagrant-staging.osuosl.org/1/vendors';
+		   	this._application._stores[1].load();
+			// console.log(this.Ext.StoreManager.items[1]._proxy._url);
+			// this._application._stores[1]._proxy._url = 'http://seagrant-staging-api.osuosl.org/1/vendors';
+			// Working on adding prduct sort when userlocation is turned off, so that the store is correctly populated
+			var hov = this.getHomeView();
+			// console.log(hov);
+			this.productSorting(hov);
+			// console.log(this._application._stores[1]._proxy._url);
 			navigator.geolocation.clearWatch(watchID);
 		}
+	},
+	productSorting: function(hview){
+		console.log("Product Sorting at the moment");
+		var store = Ext.data.StoreManager.lookup('Vendor');
+		   		if(SeaGrant_Proto.product !== 'Please choose a product'){
+					console.log('IN PROD FILTER');
+					var prodFilter = new Ext.util.Filter({
+						filterFn: function(item, record){
+							for(b = 0; b < item.data.products.length; b++){ // cycles through the vendor's products
+								// console.log(b+'  '+item.data.products[b].name);
+								if(item.data.products[b].name === SeaGrant_Proto.product){ // returns true for vendors with selected product
+									return item.data.products[b].name === SeaGrant_Proto.product;
+								}
+							}				
+						},
+						root: 'data'
+					});
+					console.log(prodFilter);
+					store.filter(prodFilter);
+				}
+				
+				// THIS FINDS THE NUMBER OF VENDORS AFTER THE SORT
+				// NEEDED TO SET MAP MARKERS IN ONGOBUTTONCOMMAND
+				SeaGrant_Proto.Litem = new Array();
+
+				SeaGrant_Proto.VstoreLength = store.data.items.length;
+				console.log('STORE LENGTH AFTER PRODUCT STORING IS =');
+				console.log(store.data.items.length);
+				// console.log(store.data.items);
+				for (j = 0; j < store.data.items.length; j++){
+					SeaGrant_Proto.Litem[j] = store.data.items[j].data;			
+					// console.log(SeaGrant_Proto.Litem[j]);
+				}
+
+				var vendcount;
+				// console.log('vendcount:');
+				// console.log(vendcount);
+				// console.log(hview);
+				var homeView = hview;
+				// console.log(homeView);
+				var crud = homeView.getComponent('vendnum'); // gets our display item in from the home page
+				// console.log("after the crud");
+				// console.log(store);
+				// console.log(store[F].data.length);
+				// This defines how the tpl data is printed out given the drop down table states
+				if ((SeaGrant_Proto.location !== 'Please choose a location') || (SeaGrant_Proto.product !== 'Please choose a product')){
+					if(SeaGrant_Proto.location === 'Please choose a location'){
+							vendcount = {
+								th: 'There are ',
+								numItems: store.getCount(),
+								v: ' vendors ',
+								w: ' with ',
+								prod: SeaGrant_Proto.product,
+								end: '.'			
+							};
+					}else{
+						if (SeaGrant_Proto.product !== 'Please choose a product'){
+							// console.log('Prod ok');
+							vendcount = {
+								th: 'There are ',
+								numItems: store.getCount(),
+								v: ' vendors ',
+								i: 'in ',
+								loc: SeaGrant_Proto.location,
+								w: ' with ',
+								prod: SeaGrant_Proto.product,
+								end: '.'			
+							};
+						}else{
+							// console.log('Prod is horid');
+							vendcount = {
+								th: 'There are ',
+								numItems: store.getCount(),
+								v: ' vendors ',
+								i: 'in ',
+								loc: SeaGrant_Proto.location,
+								end: '.'			
+							};
+						}
+					}			
+				}
+				console.log('vendcount2:');
+				console.log(vendcount);
+				crud.setData(vendcount); // needed to display tpl data on home view
+				// Ext.Viewport.setActiveItem(homeView);
 	},
 	// This function may be unnecessary due to the fact that we set the distance in the callback function above
 	onSetDistance: function(index, record){
 		console.log("In controller(home): Distance from user chosen");
-		// console.log(record._value.data.val);
+		console.log(record._value.data.val);
 		SeaGrant_Proto.dist = record._value.data.val;
 	},
 	onChooseLocation: function(index, record){
@@ -290,73 +399,78 @@ Ext.define('SeaGrant_Proto.controller.List', {
 		} else{
 			store.clearFilter();
 		}
-		if(SeaGrant_Proto.product !== 'Please choose a product'){
-			var prodFilter = new Ext.util.Filter({
-				filterFn: function(item, record){
-					for(b = 0; b < item.data.products.length; b++){ // cycles through the vendor's products
-						// console.log(b+'  '+item.data.products[b].name);
-						if(item.data.products[b].name === SeaGrant_Proto.product){ // returns true for vendors with selected product
-							return item.data.products[b].name === SeaGrant_Proto.product;
-						}
-					}				
-				},
-				root: 'data'
-			});		
-			store.filter(prodFilter);
-		}
+		var hv = this.getHomeView();
+		console.log('this is hv');
+		console.log(hv);
+		console.log(this);
+		this.productSorting(hv);
+		// if(SeaGrant_Proto.product !== 'Please choose a product'){
+		// 	var prodFilter = new Ext.util.Filter({
+		// 		filterFn: function(item, record){
+		// 			for(b = 0; b < item.data.products.length; b++){ // cycles through the vendor's products
+		// 				// console.log(b+'  '+item.data.products[b].name);
+		// 				if(item.data.products[b].name === SeaGrant_Proto.product){ // returns true for vendors with selected product
+		// 					return item.data.products[b].name === SeaGrant_Proto.product;
+		// 				}
+		// 			}				
+		// 		},
+		// 		root: 'data'
+		// 	});		
+		// 	store.filter(prodFilter);
+		// }
 
-		// NEEDED TO SET MAP MARKERS IN ONGOBUTTONCOMMAND
-		SeaGrant_Proto.Litem = new Array();
-		SeaGrant_Proto.VstoreLength = store.data.items.length;
-		console.log(store.data.items);
-		for (j = 0; j < store.data.items.length; j++){
-			SeaGrant_Proto.Litem[j] = store.data.items[j].data;			
-			// console.log(SeaGrant_Proto.Litem[j]);
-		}
+		// // NEEDED TO SET MAP MARKERS IN ONGOBUTTONCOMMAND
+		// SeaGrant_Proto.Litem = new Array();
+		// SeaGrant_Proto.VstoreLength = store.data.items.length;
+		// console.log(store.data.items);
+		// for (j = 0; j < store.data.items.length; j++){
+		// 	SeaGrant_Proto.Litem[j] = store.data.items[j].data;			
+		// 	// console.log(SeaGrant_Proto.Litem[j]);
+		// }
 
-		var homeView = this.getHomeView();
-		var crud = homeView.getComponent('vendnum'); // gets our display item in from the home page
-		var vendcount;
-		// This defines how the tpl data is printed out given the drop down table states
-		if ((SeaGrant_Proto.location !== 'Please choose a location') || (SeaGrant_Proto.product !== 'Please choose a product')){
-			if(SeaGrant_Proto.product === 'Please choose a product'){
-					vendcount = {
-						th: 'There are ',
-						numItems: store.getCount(),
-						v: ' vendors ',
-						i: 'in ',
-						loc: SeaGrant_Proto.location,
-						end: '.'			
-					};
-			}else{
-				if(SeaGrant_Proto.location !== 'Please choose a location'){
-					console.log('Prod ok');
-					vendcount = {
-						th: 'There are ',
-						numItems: store.getCount(),
-						v: ' vendors ',
-						i: 'in ',
-						loc: SeaGrant_Proto.location,
-						w: ' with ',
-						prod: SeaGrant_Proto.product,
-						end: '.'			
-					};
-				}else{
-					console.log('Prod is horid');
-					vendcount = {
-						th: 'There are ',
-						numItems: store.getCount(),
-						v: ' vendors ',
-						w: ' with ',
-						prod: SeaGrant_Proto.product,
-						end: '.'			
-					};
-				}
-			}
+		// var homeView = this.getHomeView();
+		// var crud = homeView.getComponent('vendnum'); // gets our display item in from the home page
+		// var vendcount;
+		// // This defines how the tpl data is printed out given the drop down table states
+		// if ((SeaGrant_Proto.location !== 'Please choose a location') || (SeaGrant_Proto.product !== 'Please choose a product')){
+		// 	if(SeaGrant_Proto.product === 'Please choose a product'){
+		// 			vendcount = {
+		// 				th: 'There are ',
+		// 				numItems: store.getCount(),
+		// 				v: ' vendors ',
+		// 				i: 'in ',
+		// 				loc: SeaGrant_Proto.location,
+		// 				end: '.'			
+		// 			};
+		// 	}else{
+		// 		if(SeaGrant_Proto.location !== 'Please choose a location'){
+		// 			console.log('Prod ok');
+		// 			vendcount = {
+		// 				th: 'There are ',
+		// 				numItems: store.getCount(),
+		// 				v: ' vendors ',
+		// 				i: 'in ',
+		// 				loc: SeaGrant_Proto.location,
+		// 				w: ' with ',
+		// 				prod: SeaGrant_Proto.product,
+		// 				end: '.'			
+		// 			};
+		// 		}else{
+		// 			console.log('Prod is horid');
+		// 			vendcount = {
+		// 				th: 'There are ',
+		// 				numItems: store.getCount(),
+		// 				v: ' vendors ',
+		// 				w: ' with ',
+		// 				prod: SeaGrant_Proto.product,
+		// 				end: '.'			
+		// 			};
+		// 		}
+		// 	}
 			
-		}
-		crud.setData(vendcount); // needed to display tpl data on home view
-		Ext.Viewport.setActiveItem(homeView);
+		// }
+		// crud.setData(vendcount); // needed to display tpl data on home view
+		Ext.Viewport.setActiveItem(hv);
 	},	
 	onSortByVendorCommand: function(){
 		console.log('In controller(home): Vendor checkbox');
@@ -596,7 +710,8 @@ Ext.define('SeaGrant_Proto.controller.List', {
 	},
 	init: function(){
 		this.callParent(arguments);
-		
+		SeaGrant_Proto.dist = 200;
 		console.log("init");
+		SeaGrant_Proto.vendURL = 'http://seagrant-staging-api.osuosl.org/1/vendors';
 	}
 });

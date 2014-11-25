@@ -49,6 +49,22 @@ Ext.define('SeaGrant_Proto.store.Distance', {
 			{
 				distance: '5 miles',
 				val: 5
+			},
+			{
+				distance: '4 miles',
+				val: 4
+			},
+			{
+				distance: '3 miles',
+				val: 3
+			},
+			{
+				distance: '2 miles',
+				val: 2
+			},
+			{
+				distance: '1 mile',
+				val: 1
 			}
 		]
 	}
