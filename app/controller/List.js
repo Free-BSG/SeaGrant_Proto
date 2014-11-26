@@ -120,9 +120,12 @@ Ext.define('SeaGrant_Proto.controller.List', {
 		        // this.Ext.StoreManager.items[1]._proxy._url = 'http://seagrant-staging-api.osuosl.org/1/vendors?lat='+ element.lat +'&lng='+ element.lng +'&proximity='+ SeaGrant_Proto.dist;
 		        this.Ext.getStore('Vendor').getProxy().setUrl('http://seagrant-staging.osuosl.org/1/vendors?lat='+ element.lat +'&lng='+ element.lng +'&proximity='+ SeaGrant_Proto.dist);
 		   		this.Ext.getStore('Vendor').load();
-		   		SeaGrant_Proto.locThis.productSorting(this.Ext.Viewport.items.items[0]);
-		   		// console.log('this is the hoemview we send');
-		   		// console.log(this.Ext.Viewport.items.items[0]);
+		   		var store = Ext.data.StoreManager.lookup('Vendor');
+		   		var startthis = this;
+		   		// the on load function makes sure we don't sort the products until the store is reloaded
+		   		store.on('load', function(){
+					SeaGrant_Proto.locThis.productSorting(startthis.Ext.Viewport.items.items[0]);
+				});
 		    }
 
 		    // onError Callback receives a PositionError object
@@ -138,13 +141,14 @@ Ext.define('SeaGrant_Proto.controller.List', {
 			// console.log(this);
 			this._application._stores[1]._proxy._url = 'http://seagrant-staging.osuosl.org/1/vendors';
 		   	this._application._stores[1].load();
-			// console.log(this.Ext.StoreManager.items[1]._proxy._url);
-			// this._application._stores[1]._proxy._url = 'http://seagrant-staging-api.osuosl.org/1/vendors';
-			// Working on adding prduct sort when userlocation is turned off, so that the store is correctly populated
+			// Added product sort when userlocation is turned off, so that the store is correctly populated
+			// these three variables are set so that we can us them in the on load function below
+			var store = Ext.data.StoreManager.lookup('Vendor');
 			var hov = this.getHomeView();
-			// console.log(hov);
-			this.productSorting(hov);
-			// console.log(this._application._stores[1]._proxy._url);
+			var endthis = this;
+			store.on('load', function(){
+				endthis.productSorting(hov);
+			});
 			navigator.geolocation.clearWatch(watchID);
 		}
 	},
@@ -164,7 +168,6 @@ Ext.define('SeaGrant_Proto.controller.List', {
 						},
 						root: 'data'
 					});
-					console.log(prodFilter);
 					store.filter(prodFilter);
 				}
 				
