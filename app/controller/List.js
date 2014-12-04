@@ -4,7 +4,7 @@ isPresent = true;
 
 Ext.define('SeaGrant_Proto.controller.List', {
 	extend: 'Ext.app.Controller',
-	requires: ['Ext.MessageBox', 'Ext.util.Geolocation'],
+	requires: ['Ext.MessageBox', 'Ext.util.Geolocation', 'Ext.data.Connection'],
 	alias: 'cont',
 	config: {
 		refs: {
@@ -573,6 +573,76 @@ Ext.define('SeaGrant_Proto.controller.List', {
 		console.log('In controller(info): Selected');
 		// Ext.Msg.alert(index.data.listItem, 'This is the stuff I selected.');
 		Ext.ComponentQuery.query('toolbar[itemId=specificPageToolbar]')[0].setTitle(index.data.listItem);
+		// console.log(index.data.listItem);
+		// Here is where we set the specific data using case statements to see which list item was chosen
+		// and what data needs to be displayed on the specifics page
+
+		// load the story store with the correct data for the selected item
+		var StoryStore = Ext.getStore('Story');
+		console.log(StoryStore);
+
+		switch(index.data.listItem){
+			case "Preparation":
+				// Make an api call for the stories/1/preparing 
+				// use tpl to print out the prepataion text/data
+				break;
+			case "Season":
+				break;
+			case "Price":
+				break;
+			case "History":
+				// Now we want to make an api call for the stories/1/images
+				console.log("History api call made");
+				// Ext.Ajax.request({
+					
+				// 	url: 'http://seagrant-staging-api.osuosl.org/1/stories/1',
+				// 	// extraPrams: {
+				// 	// 	model: 'SeaGrant_Proto.model.Stories',
+				// 	// 	reader: {
+				// 	// 		type: 'json'
+				// 	// 		// rootProperty: 'vendors'
+				// 	// 	}
+				// 	// },
+					
+					
+				// 	// params:{
+				// 	// 	id: 1
+				// 	// },
+				// 	success: function(response){
+				// 		SeaGrant_Proto.text = response.responseText;
+				// 		console.log(SeaGrant_Proto.text);
+					
+				// 	}
+				// });
+					var specificView = this.getSpecificView();
+					// var hist = "http://seagrant-staging-api.osuosl.org/1/stories/1";
+					// console.log(hist);
+					// Then we show the image
+					console.log("Now you see the image");
+					// Use link to obtain the image, then display the image
+					//"hist.images.link"
+					// var image = {
+					// 	im: StoryStore.data.items[0].data.images[0].link
+					// };
+					// console.log(image);
+					// var SVimage = specificView.getComponent('image1');
+					// SVimage.setData(image);
+					// Finally we print the caption under the image
+					console.log("Caption is included");
+					// USE TPL
+					// console.log(SeaGrant_Proto.text.images);
+					var caption = {
+						cap: StoryStore.data.items[0].data.images[0].caption
+					};
+					console.log(caption);
+					
+					var SVnow = specificView.getComponent('caption'); // gets our display item in from the specific page
+					SVnow.setData(caption);
+				break;
+			case "Videos":
+				break;
+
+		}
 		Ext.Viewport.animateActiveItem(this.getSpecificView(), this.slideLeftTransition);
 	},
 	// Functions dealing with

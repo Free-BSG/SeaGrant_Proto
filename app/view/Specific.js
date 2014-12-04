@@ -18,6 +18,16 @@ Ext.define('SeaGrant_Proto.view.Specific', {
 						itemId: 'backInfoButton'
 					}
 				]
+			},
+			{
+				xtype: 'image',
+				itemId: 'image1',
+				src: 'http://michellesread.com/files/2013/04/smile.jpg'
+			},
+			{
+				xtype: 'panel',
+	        	itemId: 'caption',
+	        	tpl: '</pre><div class="caption">{cap}</div><pre>'
 			}
 			
 		],

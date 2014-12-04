@@ -23,8 +23,8 @@ Ext.application({
     xtype: 'app',
 
     controllers: ["List"],
-    models: ["Vendors", "Products", "Locations", "VendorInventories"],
-    stores: ["Education", "Vendor", "Product", "Location", "Distance", "VendorInventory"],
+    models: ["Vendors", "Products", "Locations", "VendorInventories", "Stories"],
+    stores: ["Education", "Vendor", "Product", "Location", "Distance", "VendorInventory", "Story"],
     views: ["Home", "Detail", "ListView", "Map", "Info", "Specific"],
 
     launch: function() {
