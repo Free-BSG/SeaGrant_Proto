@@ -4,7 +4,7 @@ isPresent = true;
 
 Ext.define('SeaGrant_Proto.controller.List', {
 	extend: 'Ext.app.Controller',
-	requires: ['Ext.MessageBox', 'Ext.util.Geolocation', 'Ext.data.Connection'],
+	requires: ['Ext.MessageBox', 'Ext.util.Geolocation', 'Ext.data.Connection', 'Ext.Video'],
 	alias: 'cont',
 	config: {
 		refs: {
@@ -563,6 +563,7 @@ Ext.define('SeaGrant_Proto.controller.List', {
 		// This will get rid of the selection when we navigate back to the detail page
 		var infoItems = this.getInfoView();
 		infoItems._items.items[1].deselect(infoItems._items.items[1].selected.items[0]);
+
 		Ext.Viewport.animateActiveItem(this.getDetailView(), this.slideRightTransition);
 	},
 	onViewSpecificCommand: function(){
@@ -577,73 +578,59 @@ Ext.define('SeaGrant_Proto.controller.List', {
 		// Here is where we set the specific data using case statements to see which list item was chosen
 		// and what data needs to be displayed on the specifics page
 
-		// load the story store with the correct data for the selected item
-		var StoryStore = Ext.getStore('Story');
-		console.log(StoryStore.data.items[0].data);
+		console.log(SeaGrant_Proto.StoryStore.data.items[0].data);
 
 		switch(index.data.listItem){
 			case "Preparation":
-				// Make an api call for the stories/1/preparing 
 				// use tpl to print out the prepataion text/data
+				// Set caption
+				var caption = {
+					cap: SeaGrant_Proto.StoryStore.data.items[0].data.preparing
+				};
 				break;
 			case "Season":
+				var caption = {
+					cap: SeaGrant_Proto.StoryStore.data.items[0].data.season
+				};
 				break;
-			case "Price":
+			case "Buying":
+				var caption = {
+					cap: SeaGrant_Proto.StoryStore.data.items[0].data.buying
+				};
 				break;
 			case "History":
-				// Now we want to make an api call for the stories/1/images
-				console.log("History api call made");
-				// Ext.Ajax.request({
-					
-				// 	url: 'http://seagrant-staging-api.osuosl.org/1/stories/1',
-				// 	// extraPrams: {
-				// 	// 	model: 'SeaGrant_Proto.model.Stories',
-				// 	// 	reader: {
-				// 	// 		type: 'json'
-				// 	// 		// rootProperty: 'vendors'
-				// 	// 	}
-				// 	// },
-					
-					
-				// 	// params:{
-				// 	// 	id: 1
-				// 	// },
-				// 	success: function(response){
-				// 		SeaGrant_Proto.text = response.responseText;
-				// 		console.log(SeaGrant_Proto.text);
-					
-				// 	}
-				// });
-					var specificView = this.getSpecificView();
-					// var hist = "http://seagrant-staging-api.osuosl.org/1/stories/1";
-					// console.log(hist);
-					// Then we show the image
-					console.log("Now you see the image");
-					// Use link to obtain the image, then display the image
-					//"hist.images.link"
-					// var image = {
-					// 	// im: StoryStore.data.items[0].data.images[1].link
-					// 	im: 'https://images.search.yahoo.com/images/view;_ylt=AwrTcXHtp4BURvQAPEmJzbkF;_ylu=X3oDMTIyZXY4ZmNzBHNlYwNzcgRzbGsDaW1nBG9pZAM0Yjc2ZGMzMjgwYzhmZTY3NGQyMjA4ZjcwMzU1NTcwYQRncG9zAzcEaXQDYmluZw--?.origin=&back=https%3A%2F%2Fimages.search.yahoo.com%2Fyhs%2Fsearch%3F_adv_prop%3Dimage%26va%3Dsmile%26fr%3Dyhs-mozilla-001%26hsimp%3Dyhs-001%26hspart%3Dmozilla%26tab%3Dorganic%26ri%3D7&w=693&h=693&imgurl=www.technodabble.com%2Fcssimg%2Fsmile.jpg&rurl=http%3A%2F%2Fwww.technodabble.com%2Fcssimg%2F&size=170.1KB&name=img+alt+%3Cb%3Esmile%3C%2Fb%3E+src+%3Cb%3Esmile%3C%2Fb%3E+jpg&p=smile&oid=4b76dc3280c8fe674d2208f70355570a&fr2=&fr=yhs-mozilla-001&tt=img+alt+%3Cb%3Esmile%3C%2Fb%3E+src+%3Cb%3Esmile%3C%2Fb%3E+jpg&b=0&ni=21&no=7&ts=&tab=organic&sigr=113d9msfq&sigb=144360p2c&sigi=115a15n4g&sigt=119pja3gl&sign=119pja3gl&.crumb=tfiwMKLaaGq&fr=yhs-mozilla-001&hsimp=yhs-001&hspart=mozilla'
-					// };
-					// console.log(image);
-					// var SVimage = specificView.getComponent('image1');
-					// SVimage.setData(image);
-					// Finally we print the caption under the image
-					console.log("Caption is included");
-					// USE TPL
-					// console.log(SeaGrant_Proto.text.images);
-					var caption = {
-						cap: StoryStore.data.items[0].data.images[1].caption
-					};
-					console.log(caption);
-					
-					var SVnow = specificView.getComponent('caption'); // gets our display item in from the specific page
-					SVnow.setData(caption);
+				// Then we show the image
+				console.log("Now you see the image");					
+				// Here we set the image source
+				SeaGrant_Proto.SVimage.show();
+				console.log(SeaGrant_Proto.SVimage);
+				// OSL will send us a full string, so we won't have to apend part of the url
+				SeaGrant_Proto.SVimage.setSrc('http://seagrant-staging.osuosl.org'+ SeaGrant_Proto.StoryStore.data.items[0].data.images[0].link);
+				// SeaGrant_Proto.SVimage.setSrc('http://michellesread.com/files/2013/04/smile.jpg');
+				// SVimage.setSrc(image);
+				// Finally we print the caption under the image
+				console.log("Caption is included");
+				// Set caption
+				var caption = {
+					cap: SeaGrant_Proto.StoryStore.data.items[0].data.images[0].caption
+				};
+				// We can later deal with multiple images, by using a for loop to set all of the images
+				// to show and to populate thier specific image and caption. In the back command, we will
+				// just use a for loop to set their images to hide and their captions to null.
 				break;
 			case "Videos":
+				SeaGrant_Proto.SVvideo.show();
+				console.log('set the video');
+				console.log(SeaGrant_Proto.SVvideo);
+				// SeaGrant_Proto.SVvideo._url[0] = SeaGrant_Proto.StoryStore.data.items[0].data.videos[0].link;
+				var caption = {
+					cap: SeaGrant_Proto.StoryStore.data.items[0].data.videos[0].caption
+				};
 				break;
 
 		}
+		SeaGrant_Proto.SVcaption.setData(caption);
+		SeaGrant_Proto.IListItem = index.data.listItem;
 		Ext.Viewport.animateActiveItem(this.getSpecificView(), this.slideLeftTransition);
 	},
 	// Functions dealing with
@@ -651,18 +638,43 @@ Ext.define('SeaGrant_Proto.controller.List', {
 	// stuff	######################################################################################	SPECIFIC
 	onViewBackInfoCommand: function(){
 		console.log('In controller(specific): Back to Info Page Button');
+
+		switch(SeaGrant_Proto.IListItem){
+			case "Preparation":
+				break;
+			case "Season":
+				break;
+			case "Buying":
+				break;
+			case "History":
+				// Remove the image source
+				SeaGrant_Proto.SVimage.hide();
+				SeaGrant_Proto.SVimage.setSrc('');				
+				break;
+			case "Videos":
+				SeaGrant_Proto.SVvideo._url[0] = null;
+				SeaGrant_Proto.SVvideo.hide();
+				break;
+
+		}
+		// remove caption
+		var caption = {
+			cap: null
+		};
+		SeaGrant_Proto.SVcaption.setData(caption);
 		Ext.Viewport.animateActiveItem(this.getInfoView(), this.slideRightTransition);
 	},
 	// Initialize functions
 	launch: function(){
 		this.callParent(arguments);
-		// var LocStore = Ext.getStore('Location');
-		// LocStore.insert(1, [
-		// 	{
-		// 		city: 'Please choose a location',
-		// 		id: 1
-		// 	}
-		// ]);
+		// Story store variables used in the info and specific windows
+		SeaGrant_Proto.StoryStore = Ext.getStore('Story');
+		SeaGrant_Proto.specificView = this.getSpecificView();
+		SeaGrant_Proto.SVcaption = SeaGrant_Proto.specificView.getComponent('caption');
+		SeaGrant_Proto.SVimage = SeaGrant_Proto.specificView.getComponent('image1');
+		SeaGrant_Proto.SVvideo = SeaGrant_Proto.specificView.getComponent('video1');
+		SeaGrant_Proto.SVimage.hide();
+		SeaGrant_Proto.SVvideo.hide();
 		console.log("launch");
 	},
 	init: function(){

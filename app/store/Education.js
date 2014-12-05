@@ -12,7 +12,7 @@ Ext.define('SeaGrant_Proto.store.Education', {
 			},
 			{
 				text: 'Ed item 3',
-				listItem: 'Price'
+				listItem: 'Buying'
 			},
 			{
 				text: 'Ed item 4',
