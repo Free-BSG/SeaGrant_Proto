@@ -552,6 +552,24 @@ Ext.define('SeaGrant_Proto.controller.List', {
 	onViewDpageListItemCommand: function(record, list, index){
 		console.log('In controller(detail): Select list item');
 		// Ext.Msg.alert(index.data.name, 'This is the selected list item.');
+		console.log(index);
+		// need to then get the index data item from the product store, so that I can populate the story store correctly
+		var ProdStore = Ext.getStore('Product');
+		console.log(ProdStore);
+		for(i = 0; i < ProdStore.data.items.length; i++){
+			if(index.data.name === ProdStore.data.items[i].data.name){
+				console.log(SeaGrant_Proto.StoryStore);
+				console.log("the story id");
+				console.log(ProdStore.data.items[i].data.story);
+				// this store load doesn't seem to be working, it is probably because we have not reloaded the store yet
+				SeaGrant_Proto.StoryStore._proxy._url = 'http://seagrant-staging-api.osuosl.org/1/stories/'+ProdStore.data.items[i].data.story;
+				Ext.getStore('Story').load();
+				SeaGrant_Proto.StoryStore.on('load', function(){
+					console.log("story loaded");
+				})
+			}
+		}
+		
 		Ext.ComponentQuery.query('toolbar[itemId=infoPageToolbar]')[0].setTitle(index.data.name);
 		Ext.Viewport.animateActiveItem(this.getInfoView(), this.slideLeftTransition);
 	},
@@ -599,33 +617,48 @@ Ext.define('SeaGrant_Proto.controller.List', {
 				};
 				break;
 			case "History":
-				// Then we show the image
-				console.log("Now you see the image");					
-				// Here we set the image source
-				SeaGrant_Proto.SVimage.show();
-				console.log(SeaGrant_Proto.SVimage);
-				// OSL will send us a full string, so we won't have to apend part of the url
-				SeaGrant_Proto.SVimage.setSrc('http://seagrant-staging.osuosl.org'+ SeaGrant_Proto.StoryStore.data.items[0].data.images[0].link);
-				// SeaGrant_Proto.SVimage.setSrc('http://michellesread.com/files/2013/04/smile.jpg');
-				// SVimage.setSrc(image);
-				// Finally we print the caption under the image
-				console.log("Caption is included");
-				// Set caption
-				var caption = {
-					cap: SeaGrant_Proto.StoryStore.data.items[0].data.images[0].caption
-				};
-				// We can later deal with multiple images, by using a for loop to set all of the images
-				// to show and to populate thier specific image and caption. In the back command, we will
-				// just use a for loop to set their images to hide and their captions to null.
+				if(SeaGrant_Proto.StoryStore.data.items[0].data.images.length > 0){
+					// Then we show the image
+					console.log("Now you see the image");					
+					// Here we set the image source
+					SeaGrant_Proto.SVimage.show();
+					console.log(SeaGrant_Proto.SVimage);
+					// OSL will send us a full string, so we won't have to apend part of the url
+					SeaGrant_Proto.SVimage.setSrc('http://seagrant-staging.osuosl.org'+ SeaGrant_Proto.StoryStore.data.items[0].data.images[0].link);
+					// SeaGrant_Proto.SVimage.setSrc('http://michellesread.com/files/2013/04/smile.jpg');
+					// SVimage.setSrc(image);
+					// Finally we print the caption under the image
+					console.log("Caption is included");
+					// Set caption
+					var caption = {
+						cap: SeaGrant_Proto.StoryStore.data.items[0].data.images[0].caption
+					};
+					// We can later deal with multiple images, by using a for loop to set all of the images
+					// to show and to populate thier specific image and caption. In the back command, we will
+					// just use a for loop to set their images to hide and their captions to null.
+				}else{
+					// Set caption
+					var caption = {
+						cap: "No image avalible"
+					};
+				}
 				break;
 			case "Videos":
-				SeaGrant_Proto.SVvideo.show();
-				console.log('set the video');
-				console.log(SeaGrant_Proto.SVvideo);
-				// SeaGrant_Proto.SVvideo._url[0] = SeaGrant_Proto.StoryStore.data.items[0].data.videos[0].link;
-				var caption = {
-					cap: SeaGrant_Proto.StoryStore.data.items[0].data.videos[0].caption
-				};
+				if(SeaGrant_Proto.StoryStore.data.items[0].data.videos.length > 0){
+					SeaGrant_Proto.SVvideo.show();
+					console.log('set the video');
+					console.log(SeaGrant_Proto.SVvideo);
+					// SeaGrant_Proto.SVvideo._url[0] = SeaGrant_Proto.StoryStore.data.items[0].data.videos[0].link;
+				
+					var caption = {
+						cap: SeaGrant_Proto.StoryStore.data.items[0].data.videos[0].caption
+					};
+				}else{
+					// Set caption
+					var caption = {
+						cap: "No video avalible"
+					};
+				}
 				break;
 
 		}

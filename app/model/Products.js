@@ -14,7 +14,7 @@ Ext.define('SeaGrant_Proto.model.Products', {
             'market_price',
             'link',
             'alt_name',
-            'story_id',
+            'story',
             'id',
             'name'
         ]
