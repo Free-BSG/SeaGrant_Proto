@@ -100,7 +100,18 @@ Ext.define('SeaGrant_Proto.controller.List', {
 		console.log('In controller(home): Drop Down list Location');
 		// var loc = this.getHomeView();
 		// console.log(record);
-		SeaGrant_Proto.location = record._value.data.title;
+		var key = 0;
+		var LocStore = Ext.getStore('Location');
+		if(key === 0){
+			LocStore.insert(0, [
+				{
+					name: 'Please choose a location',
+					id: 0
+				}
+			]);
+			key = 1;
+		}
+		SeaGrant_Proto.location = record._value.data.name;
 		console.log('Location is: '+ SeaGrant_Proto.location +'\n'); 
 		// ALL FILTERS ONLY TAKE STRINGS, NONE WORK WITH VARABLES
 		// THAT ARE SELECED USING DROP DOWN TABLES, EVEN TOSTRING()
@@ -203,6 +214,17 @@ Ext.define('SeaGrant_Proto.controller.List', {
 		// then we check to see if a product is chosen, if one is we sort by product
 		console.log('In controller(home): Drop Down list Products');
 		// console.log(record);
+		var key = 0;
+		var ProdStore = Ext.getStore('Product');
+		if(key === 0){
+			ProdStore.insert(0, [
+				{
+					name: 'Please choose a product',
+					id: 0
+				}
+			]);
+			key = 1;
+		}
 		console.log('Product is: '+ record._value.data.name +'\n'); 
 		SeaGrant_Proto.product = record._value.data.name;
 		var store = Ext.data.StoreManager.lookup('Vendor');
